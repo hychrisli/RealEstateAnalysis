@@ -1,5 +1,8 @@
 import scrapy
+from ..entities.house import House
 from scrapy_splash import SplashRequest
+from lxml import etree
+
 
 
 class ListingSpider(scrapy.Spider):
@@ -14,5 +17,16 @@ class ListingSpider(scrapy.Spider):
             )
 
     def parse(self, response):
-        items = response.xpath('//span[@class="mobileAddress ng-binding"]/text()').extract()
-        print(items)
+        nodes = response.xpath('//div[@class="listResults ng-scope"]').extract()
+
+        for node in nodes:
+            house = House()
+            tree = etree.HTML(node)
+            house.price = tree.xpath('//span[@class="listSalePrice ng-binding"]/text()')
+            house.addr = tree.xpath('//span[@class="longAddress ng-binding"]/text()')
+            house.type = tree.xpath('//span[@class="subClass ng-binding"]/text()')
+            house.beds = tree.xpath('//span[@class="beds"]/span[@class="itemValue ng-binding"]/text()')
+            house.baths = tree.xpath('//span[@class="baths"]/span[@class="itemValue ng-binding"]/text()')
+            house.sqft = tree.xpath('//span[@class="structureSqFt"]/span[@class="itemValue ng-binding"]/text()')
+            house.sqftlot = tree.xpath('//span[@class="lotSqFt"]/span[@class="itemValue ng-binding"]/text()')
+            house.print_details()
