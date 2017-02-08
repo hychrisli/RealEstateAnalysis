@@ -5,7 +5,7 @@ import re
 
 
 class MlsSpider(scrapy.Spider):
-    name = "mls"
+    name = "zipcode"
 
     def start_requests(self):
         url = 'http://www.mlslistings.com/browse-listings#/'
