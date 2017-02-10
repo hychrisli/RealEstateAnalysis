@@ -1,5 +1,4 @@
 import scrapy
-import re
 # This is a spider for
 # http://www.mlslistings.com/browse-listings#/
 
