@@ -2,10 +2,15 @@ import scrapy
 import json
 from scrapy_splash import SplashRequest
 from ..entities.list_property import ListProperty
+from ..mysql.property_dao import PropertyConnector
 
 
 class ApiSearchSpider(scrapy.Spider):
     name = 'api_search'
+
+    def __init__(self):
+        super(ApiSearchSpider, self).__init__()
+        self.connector = PropertyConnector()
 
     def start_requests(self):
         url = 'http://api.mlslistings.com/api/widgetsearch'
@@ -40,4 +45,5 @@ class ApiSearchSpider(scrapy.Spider):
         for item in res_lst:
             list_property = ListProperty(item)
             list_property.print_details()
+            self.connector.add_property(list_property)
             # print (item['MLSNumber'] + ' : ' + item['filteredAddress'])

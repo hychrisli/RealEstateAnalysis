@@ -1,5 +1,6 @@
 import mysql.connector
 import os
+import math
 
 
 class PropertyConnector:
@@ -32,8 +33,30 @@ class PropertyConnector:
 
     def add_property(self, property):
 
-        insert_stmt = "INSERT INTO COUNTY (NAME) VALUES ( %(county)s )"
-        value = {'county':  str(county)}
+        insert_stmt = "INSERT INTO PROPERTY_STG " \
+                      "(MLS_ID, ZIPCODE, CITY, ADDR, BEDS, FULL_BATHS, PART_BATHS, STRUCT_SQFT, " \
+                      "LOT_SIZE, LOT_SIZE_UNIT, YEAR_BUILT, LIST_PRICE, LIST_STATUS, URL) " \
+                      "VALUES " \
+                      "( %(mls_id)s, %(zipcode)s, %(city)s, %(addr)s, %(beds)s, %(full_baths)s, " \
+                      "%(part_baths)s, %(struct_sqft)s, %(lot_size)s, %(lot_size_unit)s, %(year_built)s, " \
+                      "%(list_price)s, %(list_status)s, %(url)s)"
+
+        value = {'mls_id':  property.mls_id,
+                 'zipcode': property.zipcode,
+                 'city': property.city,
+                 'addr': property.addr,
+                 'beds': property.beds,
+                 'full_baths': property.full_baths,
+                 'part_baths': property.part_baths,
+                 'struct_sqft': PropertyConnector.__handle_nan__(property.struct_sqft),
+                 'lot_size': PropertyConnector.__handle_nan__(property.lot_size),
+                 'lot_size_unit': property.lot_size_unit,
+                 'year_built': property.year_built,
+                 'list_price': PropertyConnector.__handle_nan__(property.list_price),
+                 'list_status': property.list_status,
+                 'url': property.url
+                 }
+
         return self.__exec_insert__(insert_stmt, value)
 
     def close(self):
@@ -47,3 +70,9 @@ class PropertyConnector:
     def __exec_single_select__(self, select_stmt, value):
         self.cursor.execute(select_stmt, value)
         return self.cursor.fetchone()[0]
+
+    @staticmethod
+    def __handle_nan__(num_float):
+        if math.isnan(num_float):
+            return None
+        return num_float
