@@ -20,9 +20,8 @@ class PropertyConnector:
 
         self.cnx = mysql.connector.connect(**config)
         self.cursor = self.cnx.cursor()
-        self.__init_cleanup__()
 
-    def __init_cleanup__(self):
+    def init_cleanup(self):
         self.__clean_table__("PROPERTY_STG")
 
     def __clean_table__(self, table):

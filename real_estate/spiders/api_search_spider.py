@@ -8,14 +8,13 @@ from ..mysql.property_dao import PropertyConnector
 class ApiSearchSpider(scrapy.Spider):
     name = 'api_search'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, zipcode):
         super(ApiSearchSpider, self).__init__()
         self.connector = PropertyConnector()
-        self.zipcode = kwargs.get('zipcode')
+        self.zipcode = zipcode
 
     def start_requests(self):
         url = 'http://api.mlslistings.com/api/widgetsearch'
-        # zipcodes = ['93907', '93901', '93908']
         header = ApiSearchSpider.__gen_header__()
         post_json = ApiSearchSpider.__gen_post_json__(self.zipcode)
         yield SplashRequest(url, self.parse,
@@ -35,7 +34,7 @@ class ApiSearchSpider(scrapy.Spider):
 
         for item in res_lst:
             prop = ListProperty(item)
-            prop.print_details()
+            # prop.print_details()
             property_lst.append(prop)
 
         self.connector.add_properties(property_lst)
