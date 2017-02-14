@@ -1,6 +1,7 @@
 import scrapy
 import json
 from scrapy_splash import SplashRequest
+from ..entities.list_property import ListProperty
 
 
 class ApiSearchSpider(scrapy.Spider):
@@ -37,4 +38,6 @@ class ApiSearchSpider(scrapy.Spider):
         res_lst = res_json['propertySearchResults']
 
         for item in res_lst:
-            print (item['MLSNumber'] + ' : ' + item['filteredAddress'])
+            list_property = ListProperty(item)
+            list_property.print_details()
+            # print (item['MLSNumber'] + ' : ' + item['filteredAddress'])
