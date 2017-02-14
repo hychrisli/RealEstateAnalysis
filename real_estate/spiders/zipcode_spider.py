@@ -17,30 +17,33 @@ class ZipCodeSpider(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        nodes = response.xpath('//ul[@class="BrowseMenu"]/li/a').extract()
-
-        # links = response.xpath('//ul[@class="BrowseMenu"]/li/a/@href').extract()
-        if not nodes:
-            return
-        else:
-            for node in nodes:
-                tree = etree.HTML(node)
-                name = tree.xpath('//a/text()')[0]
-                href = tree.xpath('//a/@href')[0]
-                if 'Southern' not in href:
-                    print(name)
-                    print(href)
-                    self.connector.add_county(name)
-                    # yield scrapy.Request(url=href, callback=self.parse)
-        # self.connector.close()
-
+        nodes = self.__extract_nodes__(response)
+        for node in nodes:
+            (county, href) = self.__extract_name_href__(node)
+            if 'Southern' not in county:
+                if 'Central Valley' in county:
+                    yield scrapy.Request(url=href, callback=self.parse)
+                else:
+                    self.connector.add_county(county)
+                    yield scrapy.Request(url=href, callback=self.parse_county_page)
 
     def parse_county_page(self, response):
-        return
+        nodes = self.__extract_nodes__(response)
+        county = response.xpath('//section[@class="NB_skin_content"]/h1/text()').extract_first()
+        county_id = self.connector.find_county_id(county)
+        print ("\nCOUNTY: " + county + " ID: " + str(county_id))
+        for node in nodes:
+            (city, href) = self.__extract_name_href__(node)
+            self.connector.add_city(county_id, city)
 
     def parse_city_page(self):
         return
 
+    def __extract_nodes__(self, response):
+        return response.xpath('//ul[@class="BrowseMenu"]/li/a').extract()
 
-
-
+    def __extract_name_href__(self, node):
+        tree = etree.HTML(node)
+        name = tree.xpath('//a/text()')[0]
+        href = tree.xpath('//a/@href')[0]
+        return (name, href)
