@@ -28,22 +28,35 @@ class ZipCodeSpider(scrapy.Spider):
                     yield scrapy.Request(url=href, callback=self.parse_county_page)
 
     def parse_county_page(self, response):
-        nodes = self.__extract_nodes__(response)
-        county = response.xpath('//section[@class="NB_skin_content"]/h1/text()').extract_first()
+        nodes = ZipCodeSpider.__extract_nodes__(response)
+        county = ZipCodeSpider.__extract_region__(response)
         county_id = self.connector.find_county_id(county)
-        print ("\nCOUNTY: " + county + " ID: " + str(county_id))
+        # print ("\nCOUNTY: " + county + " ID: " + str(county_id))
         for node in nodes:
             (city, href) = self.__extract_name_href__(node)
             self.connector.add_city(county_id, city)
+            yield scrapy.Request(url=href, callback=self.parse_city_page)
 
-    def parse_city_page(self):
-        return
+    def parse_city_page(self, response):
+        nodes = ZipCodeSpider.__extract_nodes__(response)
+        city = ZipCodeSpider.__extract_region__(response)
+        city_id = self.connector.find_city_id(city)
+        # print("\nCITY: " + city + "ID: " + str(city_id))
+        for node in nodes:
+            (zipcode, href) = self.__extract_name_href__(node)
+            self.connector.add_zipcode(city_id, zipcode)
 
-    def __extract_nodes__(self, response):
+    @staticmethod
+    def __extract_nodes__(response):
         return response.xpath('//ul[@class="BrowseMenu"]/li/a').extract()
 
-    def __extract_name_href__(self, node):
+    @staticmethod
+    def __extract_name_href__(node):
         tree = etree.HTML(node)
         name = tree.xpath('//a/text()')[0]
         href = tree.xpath('//a/@href')[0]
-        return (name, href)
+        return name, href
+
+    @staticmethod
+    def __extract_region__(response):
+        return response.xpath('//section[@class="NB_skin_content"]/h1/text()').extract_first()

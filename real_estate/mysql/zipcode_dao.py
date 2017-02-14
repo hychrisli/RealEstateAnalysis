@@ -19,18 +19,18 @@ class MySqlConnector:
 
         self.cnx = mysql.connector.connect(**config)
         self.cursor = self.cnx.cursor()
-        self.__clean_tables__()
+        self.__init_cleanup__()
 
-    def __clean_tables__(self):
-        stmt_delete_city = "DELETE FROM CITY"
-        stmt_delete_county = "DELETE FROM COUNTY"
-        stmt_reset_city_rowid = "ALTER TABLE CITY AUTO_INCREMENT = 1"
-        stmt_reset_county_rowid = "ALTER TABLE COUNTY AUTO_INCREMENT = 1"
+    def __init_cleanup__(self):
+        self.__clean_table__("ZIPCODE")
+        self.__clean_table__("CITY")
+        self.__clean_table__("COUNTY")
 
-        self.cursor.execute(stmt_delete_city)
-        self.cursor.execute(stmt_delete_county)
-        self.cursor.execute(stmt_reset_city_rowid)
-        self.cursor.execute(stmt_reset_county_rowid)
+    def __clean_table__(self, table):
+        delete_stmt = "DELETE FROM " + table
+        reset_stmt = "ALTER TABLE " + table + " AUTO_INCREMENT = 1"
+        self.cursor.execute(delete_stmt)
+        self.cursor.execute(reset_stmt)
 
     def add_county(self, county):
 
@@ -40,16 +40,27 @@ class MySqlConnector:
 
     def add_city(self, county_id, city):
         insert_stmt = ("INSERT INTO CITY (NAME, COUNTY_ID) "
-                       "VALUES ( %(city)s, %(county_id)s)")
+                       "VALUES ( %(city)s, %(county_id)s )")
         value = {'city': str(city),
                  'county_id': county_id}
+        return self.__exec_insert__(insert_stmt, value)
+
+    def add_zipcode(self, city_id, zipcode):
+        insert_stmt = ("INSERT INTO ZIPCODE (ZIPCODE, CITY_ID) "
+                       "VALUES ( %(zipcode)s, %(city_id)s )")
+        value = {'zipcode': str(zipcode),
+                 'city_id': city_id}
         return self.__exec_insert__(insert_stmt, value)
 
     def find_county_id(self, county):
         select_stmt = "SELECT COUNTY_ID FROM COUNTY WHERE LOWER(NAME) = %(county)s"
         value = {'county': str(county).lower()}
-        self.cursor.execute(select_stmt, value)
-        return self.cursor.fetchone()[0]
+        return self.__exec_single_select__(select_stmt, value)
+
+    def find_city_id(self, city):
+        select_stmt = "SELECT CITY_ID FROM CITY WHERE LOWER(NAME) = %(city)s"
+        value = {'city': str(city).lower()}
+        return self.__exec_single_select__(select_stmt, value)
 
     def close(self):
         self.cursor.close()
@@ -59,6 +70,9 @@ class MySqlConnector:
         self.cursor.execute(insert_stmt, value)
         return self.cursor.getlastrowid()
 
+    def __exec_single_select__(self, select_stmt, value):
+        self.cursor.execute(select_stmt, value)
+        return self.cursor.fetchone()[0]
 
 # Test
 db_cnx = MySqlConnector()
