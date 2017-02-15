@@ -2,6 +2,8 @@ import re
 
 
 class ListProperty:
+    ONE_ACRE = 43560.0
+    CITY_SIZE = 15000.0
 
     def __init__(self, json_item):
         self.mls_id = str(json_item['MLSNumber'])
@@ -18,6 +20,7 @@ class ListProperty:
         self.url = str(json_item['siteMapDetailUrlPath'])
 
     def print_details(self):
+        print(self.mls_id)
         print(self.addr + ", " + self.city + ", " + self.zipcode)
         print("price: $" + str(self.list_price) + " | built: " + str(self.year_built))
         print(str(self.beds) + " beds | "
@@ -69,4 +72,12 @@ class ListProperty:
         lot_size_unit = "sqft"
         if "acre" in var_str:
             lot_size_unit = "acres"
+            if lot_size > ListProperty.CITY_SIZE: # Wrong Input Unit
+                lot_size_correct = lot_size / ListProperty.ONE_ACRE
+                lot_size = lot_size_correct
+        elif lot_size > ListProperty.ONE_ACRE:
+            lot_size_acre = lot_size / ListProperty.ONE_ACRE
+            lot_size = round(lot_size_acre, 2)
+            lot_size_unit = "acres"
+
         return lot_size, lot_size_unit

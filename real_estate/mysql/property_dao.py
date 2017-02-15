@@ -40,6 +40,11 @@ class PropertyConnector:
                       "%(list_price)s, %(list_status)s, %(url)s)"
         values = []
         for prop in property_lst:
+            # try:
+            #     self.cursor.execute(insert_stmt, PropertyConnector.__gen_insert_value__(prop))
+            # except Exception as e:
+            #     prop.print_details()
+            #     print (e)
             values.append(PropertyConnector.__gen_insert_value__(prop))
 
         self.cursor.executemany(insert_stmt, values)

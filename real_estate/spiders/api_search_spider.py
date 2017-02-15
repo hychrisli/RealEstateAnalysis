@@ -1,27 +1,36 @@
 import scrapy
 import json
+
 from scrapy_splash import SplashRequest
 from ..entities.list_property import ListProperty
 from ..mysql.property_dao import PropertyConnector
-
+from ..mysql.zipcode_dao import ZipcodeConnector
 
 class ApiSearchSpider(scrapy.Spider):
     name = 'api_search'
 
-    def __init__(self, zipcode):
+    def __init__(self):
         super(ApiSearchSpider, self).__init__()
         self.connector = PropertyConnector()
-        self.zipcode = zipcode
+        self.connector.init_cleanup()
 
     def start_requests(self):
         url = 'http://api.mlslistings.com/api/widgetsearch'
         header = ApiSearchSpider.__gen_header__()
-        post_json = ApiSearchSpider.__gen_post_json__(self.zipcode)
-        yield SplashRequest(url, self.parse,
-                            headers=header,
-                            args={'wait': 0.5,
-                                  'http_method': 'POST',
-                                  'body': post_json})
+        # zipcodes = ['93907', '93901', '93908']
+
+        zip_cnx = ZipcodeConnector()
+        zipcodes = zip_cnx.get_zipcode_lst()
+        zip_cnx.close()
+
+        for (zipcode,) in zipcodes:
+            post_json = ApiSearchSpider.__gen_post_json__(zipcode)
+            print ("Processing " + zipcode)
+            yield SplashRequest(url, self.parse,
+                                headers=header,
+                                args={'wait': 1,
+                                      'http_method': 'POST',
+                                      'body': post_json})
 
     def parse(self, response):
         body = response.body
@@ -31,6 +40,9 @@ class ApiSearchSpider(scrapy.Spider):
         res_json = json.loads(res_str)
         res_lst = res_json['propertySearchResults']
         property_lst = []
+
+        if not res_lst:
+            return
 
         for item in res_lst:
             prop = ListProperty(item)

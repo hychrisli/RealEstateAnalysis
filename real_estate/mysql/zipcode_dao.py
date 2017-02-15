@@ -2,7 +2,7 @@ import mysql.connector
 import os
 
 
-class MySqlConnector:
+class ZipcodeConnector:
 
     def __init__(self):
         db_user = os.environ['DB_USER']
@@ -19,9 +19,8 @@ class MySqlConnector:
 
         self.cnx = mysql.connector.connect(**config)
         self.cursor = self.cnx.cursor()
-        self.__init_cleanup__()
 
-    def __init_cleanup__(self):
+    def init_cleanup(self):
         self.__clean_table__("ZIPCODE")
         self.__clean_table__("CITY")
         self.__clean_table__("COUNTY")
@@ -62,6 +61,11 @@ class MySqlConnector:
         value = {'city': str(city).lower()}
         return self.__exec_single_select__(select_stmt, value)
 
+    def get_zipcode_lst(self):
+        select_stmt = "SELECT DISTINCT ZIPCODE FROM ZIPCODE"
+        self.cursor.execute(select_stmt)
+        return self.cursor.fetchall()
+
     def close(self):
         self.cursor.close()
         self.cnx.close()
@@ -73,7 +77,3 @@ class MySqlConnector:
     def __exec_single_select__(self, select_stmt, value):
         self.cursor.execute(select_stmt, value)
         return self.cursor.fetchone()[0]
-
-# Test
-db_cnx = MySqlConnector()
-db_cnx.close()

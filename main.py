@@ -1,3 +1,4 @@
-import real_estate.controller.mls_controller as mls_controller
+from real_estate.controller.mls_controller import CrawlRunner
 
-mls_controller.run_crawler()
+runner = CrawlRunner()
+runner.run()

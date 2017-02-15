@@ -1,6 +1,6 @@
 import scrapy
 from lxml import etree
-from ..mysql.zipcode_dao import MySqlConnector
+from ..mysql.zipcode_dao import ZipcodeConnector
 # This is a spider for
 # http://www.mlslistings.com/browse-listings#/
 
@@ -10,7 +10,8 @@ class ZipCodeSpider(scrapy.Spider):
 
     def __init__(self):
         super(ZipCodeSpider, self).__init__()
-        self.connector = MySqlConnector()
+        self.connector = ZipcodeConnector()
+        self.connector.init_cleanup()
 
     def start_requests(self):
         url = 'http://www.mlslistings.com/browse-listings#/'
