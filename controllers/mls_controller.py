@@ -1,10 +1,11 @@
+from scrapy import signals, log
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from scrapy import signals, log
 from scrapy.xlib.pydispatch import dispatcher
-from ..spiders.api_search_spider import ApiSearchSpider
-from ..mysql.property_dao import PropertyConnector
-from ..mysql.zipcode_dao import ZipcodeConnector
+
+from mysql_dao import PropertyConnector
+from mysql_dao import ZipcodeConnector
+from crawlers.spiders.api_search_spider import ApiSearchSpider
 
 
 class CrawlRunner:

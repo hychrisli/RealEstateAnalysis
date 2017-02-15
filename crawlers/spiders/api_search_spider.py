@@ -1,10 +1,12 @@
-import scrapy
 import json
 
+import scrapy
 from scrapy_splash import SplashRequest
-from ..entities.list_property import ListProperty
-from ..mysql.property_dao import PropertyConnector
-from ..mysql.zipcode_dao import ZipcodeConnector
+
+from entities.real_property import RealProperty
+from mysql_dao.property_dao import PropertyConnector
+from mysql_dao.zipcode_dao import ZipcodeConnector
+
 
 class ApiSearchSpider(scrapy.Spider):
     name = 'api_search'
@@ -45,7 +47,7 @@ class ApiSearchSpider(scrapy.Spider):
             return
 
         for item in res_lst:
-            prop = ListProperty(item)
+            prop = RealProperty(item)
             # prop.print_details()
             property_lst.append(prop)
 

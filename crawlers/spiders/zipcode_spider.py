@@ -1,6 +1,9 @@
 import scrapy
 from lxml import etree
-from ..mysql.zipcode_dao import ZipcodeConnector
+
+from mysql_dao.zipcode_dao import ZipcodeConnector
+
+
 # This is a spider for
 # http://www.mlslistings.com/browse-listings#/
 
