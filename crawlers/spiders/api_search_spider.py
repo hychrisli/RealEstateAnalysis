@@ -1,11 +1,11 @@
 import json
 
 import scrapy
+from db_ops.mysql_dao.zipcode_dao import ZipcodeConnector
 from scrapy_splash import SplashRequest
 
+from db_ops.mysql_dao.property_dao import PropertyConnector
 from entities.real_property import RealProperty
-from mysql_dao.property_dao import PropertyConnector
-from mysql_dao.zipcode_dao import ZipcodeConnector
 
 
 class ApiSearchSpider(scrapy.Spider):

@@ -1,24 +1,7 @@
-import mysql.connector
-import os
+from ..generic_connector import GenericConnector
 
 
-class ZipcodeConnector:
-
-    def __init__(self):
-        db_user = os.environ['DB_USER']
-        db_pass = os.environ['DB_PASS']
-        db_host = os.environ['DB_HOST']
-        database = os.environ['DATABASE']
-        config = {
-            'user': db_user,
-            'password': db_pass,
-            'host': db_host,
-            'database': database,
-            'autocommit': True
-        }
-
-        self.cnx = mysql.connector.connect(**config)
-        self.cursor = self.cnx.cursor()
+class ZipcodeConnector(GenericConnector):
 
     def init_cleanup(self):
         self.__clean_table__("ZIPCODE")
@@ -65,10 +48,6 @@ class ZipcodeConnector:
         select_stmt = "SELECT DISTINCT ZIPCODE FROM ZIPCODE"
         self.cursor.execute(select_stmt)
         return self.cursor.fetchall()
-
-    def close(self):
-        self.cursor.close()
-        self.cnx.close()
 
     def __exec_insert__(self, insert_stmt, value):
         self.cursor.execute(insert_stmt, value)

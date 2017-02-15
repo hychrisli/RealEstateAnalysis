@@ -3,9 +3,9 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from scrapy.xlib.pydispatch import dispatcher
 
-from mysql_dao import PropertyConnector
-from mysql_dao import ZipcodeConnector
 from crawlers.spiders.api_search_spider import ApiSearchSpider
+from db_ops.mysql_dao import PropertyConnector
+from db_ops.mysql_dao import ZipcodeConnector
 
 
 class CrawlRunner:

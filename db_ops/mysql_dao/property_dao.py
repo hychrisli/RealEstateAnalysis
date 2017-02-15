@@ -1,25 +1,8 @@
-import mysql.connector
-import os
 import math
+from ..generic_connector import GenericConnector
 
 
-class PropertyConnector:
-
-    def __init__(self):
-        db_user = os.environ['DB_USER']
-        db_pass = os.environ['DB_PASS']
-        db_host = os.environ['DB_HOST']
-        database = os.environ['DATABASE']
-        config = {
-            'user': db_user,
-            'password': db_pass,
-            'host': db_host,
-            'database': database,
-            'autocommit': True
-        }
-
-        self.cnx = mysql.connector.connect(**config)
-        self.cursor = self.cnx.cursor()
+class PropertyConnector(GenericConnector):
 
     def init_cleanup(self):
         self.__clean_table__("PROPERTY_STG")
@@ -48,10 +31,6 @@ class PropertyConnector:
             values.append(PropertyConnector.__gen_insert_value__(prop))
 
         self.cursor.executemany(insert_stmt, values)
-
-    def close(self):
-        self.cursor.close()
-        self.cnx.close()
 
     @staticmethod
     def __gen_insert_value__(prop):
