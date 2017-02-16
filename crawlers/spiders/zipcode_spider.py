@@ -1,7 +1,7 @@
 import scrapy
 from lxml import etree
 
-from db_ops.mysql_dao.zipcode_dao import ZipcodeConnector
+from db_ops.mysql_dao.zipcode_dao import ZipcodeDao
 
 
 # This is a spider for
@@ -13,7 +13,7 @@ class ZipCodeSpider(scrapy.Spider):
 
     def __init__(self):
         super(ZipCodeSpider, self).__init__()
-        self.connector = ZipcodeConnector()
+        self.connector = ZipcodeDao()
         self.connector.init_cleanup()
 
     def start_requests(self):

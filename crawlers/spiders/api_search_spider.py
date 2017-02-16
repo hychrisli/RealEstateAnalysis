@@ -1,10 +1,10 @@
 import json
 
 import scrapy
-from db_ops.mysql_dao.zipcode_dao import ZipcodeConnector
+from db_ops.mysql_dao.zipcode_dao import ZipcodeDao
 from scrapy_splash import SplashRequest
 
-from db_ops.mysql_dao.property_dao import PropertyConnector
+from db_ops.mysql_dao.property_dao import PropertyStgDao
 from entities.real_property import RealProperty
 
 
@@ -13,7 +13,7 @@ class ApiSearchSpider(scrapy.Spider):
 
     def __init__(self):
         super(ApiSearchSpider, self).__init__()
-        self.connector = PropertyConnector()
+        self.connector = PropertyStgDao()
         self.connector.init_cleanup()
 
     def start_requests(self):
@@ -21,7 +21,7 @@ class ApiSearchSpider(scrapy.Spider):
         header = ApiSearchSpider.__gen_header__()
         # zipcodes = ['93907', '93901', '93908']
 
-        zip_cnx = ZipcodeConnector()
+        zip_cnx = ZipcodeDao()
         zipcodes = zip_cnx.get_zipcode_lst()
         zip_cnx.close()
 
@@ -68,6 +68,6 @@ class ApiSearchSpider(scrapy.Spider):
 
     @staticmethod
     def __gen_post_json__(zipcode):
-        return '{"display":{"pageNumber":1,"itemsPerPage":200},"cityName":"",' \
+        return '{"display":{"pageNumber":1,"itemsPerPage":400},"cityName":"",' \
                '"countyName":"","zipCode":"' + zipcode + '","mlsNumber":"","address":"",' \
                '"beds":"","baths":"","listSalePrice":""}'

@@ -2,16 +2,10 @@ import math
 from ..generic_connector import GenericConnector
 
 
-class PropertyConnector(GenericConnector):
+class PropertyStgDao(GenericConnector):
 
     def init_cleanup(self):
         self.__clean_table__("PROPERTY_STG")
-
-    def __clean_table__(self, table):
-        delete_stmt = "DELETE FROM " + table
-        reset_stmt = "ALTER TABLE " + table + " AUTO_INCREMENT = 1"
-        self.cursor.execute(delete_stmt)
-        self.cursor.execute(reset_stmt)
 
     def add_properties(self, property_lst):
         insert_stmt = "INSERT INTO PROPERTY_STG " \
@@ -28,7 +22,7 @@ class PropertyConnector(GenericConnector):
             # except Exception as e:
             #     prop.print_details()
             #     print (e)
-            values.append(PropertyConnector.__gen_insert_value__(prop))
+            values.append(PropertyStgDao.__gen_insert_value__(prop))
 
         self.cursor.executemany(insert_stmt, values)
 
@@ -41,11 +35,11 @@ class PropertyConnector(GenericConnector):
                  'beds': prop.beds,
                  'full_baths': prop.full_baths,
                  'part_baths': prop.part_baths,
-                 'struct_sqft': PropertyConnector.__handle_nan__(prop.struct_sqft),
-                 'lot_size': PropertyConnector.__handle_nan__(prop.lot_size),
+                 'struct_sqft': PropertyStgDao.__handle_nan__(prop.struct_sqft),
+                 'lot_size': PropertyStgDao.__handle_nan__(prop.lot_size),
                  'lot_size_unit': prop.lot_size_unit,
                  'year_built': prop.year_built,
-                 'list_price': PropertyConnector.__handle_nan__(prop.list_price),
+                 'list_price': PropertyStgDao.__handle_nan__(prop.list_price),
                  'list_status': prop.list_status,
                  'url': prop.url
                  }
