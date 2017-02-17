@@ -4,12 +4,16 @@ from db_ops.etl.property_etl import PropertyEtl
 
 
 etl_cnx = PropertyEtl()
-etl_cnx.call_sp_property_incr_insert()
+fdbk_incr = etl_cnx.call_sp_property_incr_insert()
+print (fdbk_incr)
 
 runner = CrawlRunner()
 runner.run()
 
-etl_cnx.call_sp_prop_del_mls_excld()
+fdbk_del = etl_cnx.call_sp_prop_del_mls_excld()
+print (fdbk_del)
+fdbk_fact = etl_cnx.call_sp_property_fact_insert()
+print (fdbk_fact)
 # cnx = MlsTypeDao()
 # res = cnx.get_prop_types()
 # print (res)
