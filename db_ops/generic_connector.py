@@ -1,8 +1,8 @@
 import mysql.connector
 import os
-import abc
 
-class GenericConnector:
+
+class GenericConnector(object):
 
     def __init__(self):
         db_user = os.environ['DB_USER']
@@ -30,6 +30,10 @@ class GenericConnector:
         self.cursor.execute(delete_stmt)
         self.cursor.execute(reset_stmt)
 
-    def __exec_single_insert__(self, insert_stmt, value):
-        self.cursor.execute(insert_stmt, value)
+    def __single_upsert__(self, upsert_stmt, value):
+        self.cursor.execute(upsert_stmt, value)
         return self.cursor.getlastrowid()
+
+    def __select_all__(self, select_stmt):
+        self.cursor.execute(select_stmt)
+        return self.cursor.fetchall()

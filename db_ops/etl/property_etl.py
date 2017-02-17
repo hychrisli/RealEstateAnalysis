@@ -1,7 +1,12 @@
 from ..generic_connector import GenericConnector
 
 
-class PropertyFactEtl(GenericConnector):
+class PropertyEtl(GenericConnector):
 
-    def load_new_mls_ids(self):
-        insert_stmt = "INSERT INTO property_fact ()"
+    def call_sp_property_incr_insert(self):
+        sp_stmt = "CALL sp_property_incr_insert"
+        self.cursor.execute(sp_stmt)
+
+    def call_sp_prop_del_mls_excld(self):
+        sp_stmt = "CALL sp_prop_del_mls_excld"
+        self.cursor.execute(sp_stmt)
