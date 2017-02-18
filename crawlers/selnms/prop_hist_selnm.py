@@ -1,18 +1,8 @@
-from urllib import urlencode
-import requests
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
-# params = {'search': '144 W California, Sunnyvale, CA'}
-# search_url = 'http://www.trulia.com/submit_search/?'
-# url = search_url + urlencode(params)
-#
-# r = requests.get(url)
-# print (url)
-# print (r)
 
 
 browser = webdriver.Firefox()
@@ -32,5 +22,3 @@ except TimeoutException:
 
 print(browser.current_url)
 browser.get("http://www.realtor.com/")
-
-# browser.quit()
