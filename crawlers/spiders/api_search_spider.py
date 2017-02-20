@@ -4,7 +4,7 @@ import scrapy
 from db_ops.mysql_dao.zipcode_dao import ZipcodeDao
 from scrapy_splash import SplashRequest
 
-from db_ops.mysql_dao.property_dao import PropertyStgDao
+from db_ops.mysql_dao.mls_prop_dao import MlsPropDao
 from entities.real_property import RealProperty
 
 
@@ -13,7 +13,7 @@ class ApiSearchSpider(scrapy.Spider):
 
     def __init__(self):
         super(ApiSearchSpider, self).__init__()
-        self.connector = PropertyStgDao()
+        self.connector = MlsPropDao()
         self.connector.init_cleanup()
 
     def start_requests(self):

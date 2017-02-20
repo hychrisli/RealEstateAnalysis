@@ -2,7 +2,7 @@ from ..generic_connector import GenericConnector
 
 
 class MlsTypeDao(GenericConnector):
-    INCR_TAB= 'property_incr'
+    INCR_TAB= 'mls_prop_incr'
     TYPE_TAB = 'prop_type_lkp'
     COMMERCIAL_KEY_WORDS = ['109', 'commercial', 'comm.', 'agriculture',
                             'business', 'farm', 'retail']
