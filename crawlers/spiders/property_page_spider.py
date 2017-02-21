@@ -1,6 +1,7 @@
 import scrapy
 import re
 from etl.dao.mls_type_dao import MlsTypeDao
+from utility.display import show_progress
 
 
 class PropertyPageSpider(scrapy.Spider):
@@ -24,10 +25,4 @@ class PropertyPageSpider(scrapy.Spider):
         prop_type = re.sub('\([^)]+\)', '', str(type_year)).strip()
         self.cnx.update_prop_incr_with_type(mls_id, prop_type)
         self.num_done_urls += 1
-        if self.num_urls \
-                and self.num_done_urls \
-                and self.num_done_urls % 25 == 0:
-
-            percent = round(float(self.num_done_urls) * 100.0 / float(self.num_urls), 2)
-            print (str(percent) + "% finished. Current: " + str(mls_id))
-
+        show_progress(self.num_done_urls, self.num_urls, 25, "processing " + str(mls_id))
