@@ -1,6 +1,6 @@
 from controllers.mls_controller import ApiSearchRunner
 from controllers.mls_controller import PropPageRunner
-from db_ops.etl.mls_prop_etl import PropertyEtl
+from db_ops.etl.mls_prop_etl import MlsPropEtl
 
 import os
 
@@ -14,7 +14,7 @@ if pid == 0:
 os.waitpid(pid, 0)
 
 print ("call_sp_property_incr_insert")
-etl_cnx = PropertyEtl()
+etl_cnx = MlsPropEtl()
 etl_cnx.call_sp_mls_prop_incr_insert()
 
 print ("prop_page_runner")

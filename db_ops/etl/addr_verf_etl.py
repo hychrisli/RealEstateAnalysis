@@ -1,9 +1,12 @@
 from pyusps import address_information
+import os
 
-addr = dict([
-    ('address', '23422 Alta Mar TER 48'),
-    ('city', 'San Jose'),
-    ('state', 'CA'),
-])
-res = address_information.verify('301PERSO4278', addr)
-print (res)
+
+class AddrVerfEtl:
+    def __init__(self):
+        self.usps_id = os.environ['USPS_ID']
+
+    def verify(self, addrs):
+        res = address_information.verify(self.usps_id, *addrs)
+        return res
+

@@ -3,7 +3,7 @@ from ..generic_connector import GenericConnector
 
 
 class MlsPropDao(GenericConnector):
-    MLS_PROP_STG_TAB="MLS_PROP_STG"
+    MLS_PROP_STG_TAB = "mls_prop_stg"
 
     def init_cleanup(self):
         self.__clean_table__(MlsPropDao.MLS_PROP_STG_TAB)

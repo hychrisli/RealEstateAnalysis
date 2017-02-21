@@ -1,7 +1,7 @@
 from ..generic_connector import GenericConnector
 
 
-class PropertyEtl(GenericConnector):
+class MlsPropEtl(GenericConnector):
 
     def call_sp_mls_prop_incr_insert(self):
         return self.cursor.execute("CALL sp_mls_prop_incr_insert")
