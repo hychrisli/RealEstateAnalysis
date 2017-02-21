@@ -1,7 +1,7 @@
 import scrapy
 from lxml import etree
 
-from db_ops.mysql_dao.zipcode_dao import ZipcodeDao
+from etl.dao.zipcode_dao import ZipcodeDao
 
 
 # This is a spider for

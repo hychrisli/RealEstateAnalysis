@@ -1,6 +1,6 @@
 import scrapy
 import re
-from db_ops.mysql_dao.mls_type_dao import MlsTypeDao
+from etl.dao.mls_type_dao import MlsTypeDao
 
 
 class PropertyPageSpider(scrapy.Spider):

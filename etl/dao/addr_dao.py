@@ -1,6 +1,7 @@
-from ..generic_connector import GenericConnector
-from ..etl.addr_verf_etl import AddrVerfEtl
+from ..abstr_cnx import GenericConnector
+from ..routines.addr_verf_etl import AddrVerfEtl
 from pyusps.address_information import OrderedDict
+
 
 class AddrDao(GenericConnector):
     MLS_ADDR_VIEW = 'v_mls_addr'

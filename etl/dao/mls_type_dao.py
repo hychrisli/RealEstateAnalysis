@@ -1,4 +1,4 @@
-from ..generic_connector import GenericConnector
+from ..abstr_cnx import GenericConnector
 
 
 class MlsTypeDao(GenericConnector):

@@ -1,6 +1,7 @@
 import scrapy
 from lxml import etree
-from entities.prop_hist import PropHist
+
+from etl.entities.prop_hist import PropHist
 
 
 class PropHistSpider(scrapy.Spider):

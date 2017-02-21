@@ -1,6 +1,6 @@
 from controllers.mls_controller import ApiSearchRunner
 from controllers.mls_controller import PropPageRunner
-from db_ops.etl.mls_prop_etl import MlsPropEtl
+from etl.routines.mls_prop_etl import MlsPropEtl
 
 import os
 
