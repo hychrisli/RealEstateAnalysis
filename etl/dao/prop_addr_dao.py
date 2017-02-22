@@ -62,9 +62,10 @@ class PropAddrDao(GenericConnector):
 
     @staticmethod
     def __gen_select_prop_addr_stmt__():
-        return "SELECT incr.MLS_ID, vmls.ADDR, vmls.CITY, vmls.STATE FROM " \
+        return "SELECT incr.MLS_ID, incr.USPS_ADDR, vmls.CITY, vmls.STATE FROM " \
                + PropAddrDao.MLS_ADDR_VIEW + " AS vmls JOIN " \
-               + PropAddrDao.PROP_ADDR_INCR_TAB + " AS incr ON vmls.MLS_ID = incr.MLS_ID"
+               + PropAddrDao.PROP_ADDR_INCR_TAB + " AS incr ON vmls.MLS_ID = incr.MLS_ID" \
+                                                  " WHERE ISNULL(incr.REALTOR_URL)"
 
     @staticmethod
     def __gen_upd_url_stmt__():
