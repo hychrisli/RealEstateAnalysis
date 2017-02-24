@@ -50,7 +50,7 @@ class PropAddrUrlSelnm:
             upd_flag = show_progress(cur_num, tot_num, intvl, "\n\n\n")
 
             wait_time = randint(15, 40)
-            print ("No." + cur_num + " waiting... " + str(wait_time) + "s")
+            print ("No." + str(cur_num) + " waiting... " + str(wait_time) + "s")
             time.sleep(wait_time)
 
             if upd_flag:
@@ -68,7 +68,7 @@ class PropAddrUrlSelnm:
         text_box.clear()
         text_box.send_keys(addr)  # enter text in input
         wait_time = randint(15, 30)
-        print ("Home page waiting ... " + wait_time + "s")
+        print ("Home page waiting ... " + str(wait_time) + "s")
         time.sleep(wait_time)
         self.browser.find_element_by_xpath('//button[@class="btn btn-primary js-searchButton"]').click()
         try:

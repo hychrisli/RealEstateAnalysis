@@ -10,7 +10,7 @@ class CrawlRunner(object):
     def __init__(self):
         settings = get_project_settings()
         settings.set('LOG_LEVEL', 'WARNING')
-        settings.set('DOWNLOAD_DELAY', 0.25)
+        settings.set('DOWNLOAD_DELAY', 1)
         self. process = CrawlerProcess(settings)
 
     @abc.abstractmethod

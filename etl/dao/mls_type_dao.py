@@ -14,7 +14,7 @@ class MlsTypeDao(GenericConnector):
         self.type_dict = self.__create_type_dict__()
 
     def get_mls_url_incr(self):
-        select_stmt = "SELECT URL FROM " + MlsTypeDao.INCR_TAB
+        select_stmt = "SELECT MLS_ID, URL FROM " + MlsTypeDao.INCR_TAB
         return self.__select_all__(select_stmt)
 
     def update_prop_incr_with_type(self, mls_id, prop_type):
