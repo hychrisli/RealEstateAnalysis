@@ -2,6 +2,7 @@ from controllers.mls_controller import ApiSearchRunner
 from controllers.mls_controller import PropPageRunner
 from etl.routines.mls_prop_etl import MlsPropEtl
 from etl.dao.prop_addr_dao import PropAddrDao
+from etl.routines.prop_addr_etl import PropAddrEtl
 from crawlers.selnms.prop_addr_url_selnm import PropAddrUrlSelnm
 
 import os
@@ -41,3 +42,6 @@ print ("PropAddrUrlSelnm.upd_urls")
 url_selnm = PropAddrUrlSelnm()
 url_selnm.upd_urls()
 
+print ("call sp_prop_addr_fact_upsert")
+prop_addr_etl_cnx = PropAddrEtl()
+prop_addr_etl_cnx.call_sp_prop_addr_fact_upsert()

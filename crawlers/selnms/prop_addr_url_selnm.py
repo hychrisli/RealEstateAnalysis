@@ -17,13 +17,14 @@ class PropAddrUrlSelnm:
 
     @staticmethod
     def __init_browser__():
-        fp = webdriver.FirefoxProfile('/home/sparkit/Data/FirefoxProfile')
-        fp.set_preference('permissions.default.image', 2)
-        fp.set_preference('dom.ipc.plugins.enabled.libflashplayer.so', False)
-        fp.set_preference('webdriver.load.strategy', 'unstable')
-        fp.set_preference('javascript.enabled', False)
-        browser = webdriver.Firefox(firefox_profile=fp)
-        browser.implicitly_wait(10)
+        # fp = webdriver.FirefoxProfile('/home/sparkit/Data/FirefoxProfile')
+        # fp.set_preference('permissions.default.image', 2)
+        # fp.set_preference('dom.ipc.plugins.enabled.libflashplayer.so', False)
+        # fp.set_preference('webdriver.load.strategy', 'unstable')
+        # fp.set_preference('javascript.enabled', False)
+        # browser = webdriver.Firefox(firefox_profile=fp)
+        browser = webdriver.PhantomJS()
+        browser.implicitly_wait(1)
         return browser
 
     def __get_addrs__(self):

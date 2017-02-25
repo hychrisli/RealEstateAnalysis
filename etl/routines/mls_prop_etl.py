@@ -1,5 +1,6 @@
 from ..abstr_cnx import GenericConnector
 
+
 class MlsPropEtl(GenericConnector):
 
     def call_sp_mls_prop_incr_insert(self):
