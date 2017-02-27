@@ -1,21 +1,8 @@
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
+from controllers.abstr_controller import CrawlRunner
 from crawlers.spiders.property_page_spider import PropertyPageSpider
 from crawlers.spiders.api_search_spider import ApiSearchSpider
-from multiprocessing import Process
-import abc, os, threading
 
-
-class CrawlRunner(object):
-    def __init__(self):
-        settings = get_project_settings()
-        settings.set('LOG_LEVEL', 'WARNING')
-        settings.set('DOWNLOAD_DELAY', 1)
-        self. process = CrawlerProcess(settings)
-
-    @abc.abstractmethod
-    def run(self):
-        return
+import os
 
 
 class ApiSearchRunner(CrawlRunner):
