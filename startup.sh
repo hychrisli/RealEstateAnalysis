@@ -1,8 +1,7 @@
 #!/bin/bash
 
 echo "Starting Docker with password: "
-sudo systemctl start docker &
-wait $!
+sudo systemctl start docker
 
 if [ $? = 0 ]
 then 
@@ -16,5 +15,6 @@ then
 	echo "Splash stopped"
 fi
 
+echo "Stopping Docker with password: "
 sudo systemctl stop docker
 echo "Docker is stopped"
