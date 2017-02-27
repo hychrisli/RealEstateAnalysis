@@ -2,6 +2,7 @@
 
 echo "Starting Docker with password: "
 sudo systemctl start docker
+sleep 5
 
 if [ $? = 0 ]
 then 
