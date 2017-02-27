@@ -2,7 +2,6 @@ from ..abstr_cnx import GenericConnector
 
 
 class PropAddrHistDao(GenericConnector):
-
     HIST_STG_TABLE = 'prop_addr_hist_stg'
     PROP_ADDR_FACT_TABLE = 'prop_addr_fact'
 
@@ -13,14 +12,22 @@ class PropAddrHistDao(GenericConnector):
         select_stmt = self.__gen_select_stmt__()
         return self.__select_all__(select_stmt)
 
-    def add_prop_addr_hist(self, hist):
+    def add_prop_addr_hist(self, prop_addr_id, hist):
+
+        # Insert into HIST_STG_TABLE
         insert_stmt = self.__gen_insert_stmt__()
         insert_values = []
 
         for hist_event in hist:
             insert_values.append(self.__gen_insert_value__(hist_event))
 
-        return self.cursor.executemany(insert_stmt, insert_values)
+        self.cursor.executemany(insert_stmt, insert_values)
+
+        # update PROP_ADDR_FACT_TABLE
+        upd_stmt = self.__gen_upd_stmt__()
+        upd_value = self.__gen_upd_value__(prop_addr_id)
+
+        self.cursor.execute(upd_stmt, upd_value)
 
     @staticmethod
     def __gen_select_stmt__():
@@ -37,10 +44,19 @@ class PropAddrHistDao(GenericConnector):
     @staticmethod
     def __gen_insert_value__(hist):
         value = {
-            'prop_addr_id': str(hist.prop_addr_id),
+            'prop_addr_id': hist.prop_addr_id,
             'event_date': hist.event_date,
             'event': str(hist.event),
             'price': hist.price,
             'price_sqft': hist.price_sqft
         }
         return value
+
+    @staticmethod
+    def __gen_upd_stmt__():
+        return "UPDATE " + PropAddrHistDao.PROP_ADDR_FACT_TABLE + \
+               " SET IS_UPDATED = 1 WHERE PROP_ADDR_ID = %(prop_addr_id)s"
+
+    @staticmethod
+    def __gen_upd_value__(prop_addr_id):
+        return {'prop_addr_id': prop_addr_id}
