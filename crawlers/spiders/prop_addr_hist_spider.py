@@ -1,5 +1,8 @@
 import scrapy
+import time
+
 from lxml import etree
+from random import randint
 
 from etl.entities.prop_addr_hist_event import PropAddrHistEvent
 from etl.dao.prop_addr_hist_dao import PropAddrHistDao
@@ -27,7 +30,6 @@ class PropAddrHistSpider(scrapy.Spider):
     def parse(self, response):
         rows = response.xpath('//div[@id="ldp-history-price"]//tbody/tr').extract()
         prop_addr_id = response.meta['prop_addr_id']
-        prop_addr_hist = []
         self.num_done_urls += 1
 
         for row in rows:
@@ -39,9 +41,11 @@ class PropAddrHistSpider(scrapy.Spider):
             hist_event.set_price(cols.xpath('//td[3]/text()')[0])
             hist_event.set_price_sqft(cols.xpath('//td[4]/text()')[0])
 
-            # hist_event.print_hist()
-            prop_addr_hist.append(hist_event)
+            self.cnx.add_prop_addr_hist_event(hist_event)
 
-        self.cnx.add_prop_addr_hist(prop_addr_id, prop_addr_hist)
+        self.cnx.mark_is_updated(prop_addr_id)
 
         show_progress(self.num_done_urls, self.num_urls, 1, "processing " + str(prop_addr_id))
+
+    def close(self, reason):
+        self.cnx.close()

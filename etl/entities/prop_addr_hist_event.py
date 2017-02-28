@@ -20,9 +20,9 @@ class PropAddrHistEvent:
     def set_date(self, val_str):
         self.event_date = datetime.strptime(val_str, '%m/%d/%Y').date()
 
-    def print_hist(self):
-        print (str(self.prop_addr_id) + ' | ' + str(self.event_date) + " | " + self.event +
-               " | " + str(self.price) + " | " + str(self.price_sqft))
+    def to_string(self):
+        return (str(self.prop_addr_id) + '|' + str(self.event_date) + '|' + self.event +
+                '|' + str(self.price) + '|' + str(self.price_sqft))
 
     @staticmethod
     def __extract_number__(val_str):
