@@ -48,7 +48,6 @@ class PropAddrHistDao(GenericConnector):
         self.rej_rec_file.flush()
 
     def close(self):
-        print ("closing")
         self.rej_rec_file.close()
         self.cursor.close()
         self.cnx.close()

@@ -10,6 +10,8 @@ class CrawlRunner(object):
         settings.set('DOWNLOAD_DELAY', delay)
         settings.set('CONCURRENT_REQUESTS_PER_IP', req_per_ip)
         settings.set('AUTOTHROTTLE_TARGET_CONCURRENCY', 0.5)
+        settings.set('COOKIES_ENABLED', False)
+        settings.set('USER_AGENT', 'Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0')
         self. process = CrawlerProcess(settings)
 
     @abc.abstractmethod
