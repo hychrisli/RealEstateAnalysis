@@ -2,19 +2,27 @@
 
 echo "Starting Docker with password: "
 sudo systemctl start docker
-sleep 5
 
-if [ $? = 0 ]
-then 
-	echo "Starting Splash"
-	sudo docker run -d -p 8050:8050 scrapinghub/splash &
-	SPLASH_PID=`ps -ef | pgrep -f splash`
+while true; do
+    ps -ef | pgrep -f docker-containerd
+    if [ $? = 0 ]
+    then
+        echo "Docker started"
+        break
+     fi
+    echo "Still waiting for Docker to startup"
+    sleep 5
+done
 
-	python main.py
-	
-	sudo kill ${SPLASH_PID}
-	echo "Splash stopped"
-fi
+echo "Starting Splash"
+sudo docker run -d -p 8050:8050 scrapinghub/splash &
+SPLASH_PID=`ps -ef | pgrep -f splash`
+sleep 10
+
+python main.py
+
+sudo kill ${SPLASH_PID}
+echo "Splash stopped"
 
 echo "Stopping Docker with password: "
 sudo systemctl stop docker
