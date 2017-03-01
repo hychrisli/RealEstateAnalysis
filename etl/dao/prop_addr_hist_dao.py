@@ -1,5 +1,5 @@
 from ..abstr_cnx import GenericConnector
-from datetime import datetime
+from random import randint
 
 import mysql.connector
 import os
@@ -12,12 +12,13 @@ class PropAddrHistDao(GenericConnector):
     def __init__(self):
         super(PropAddrHistDao, self).__init__()
         file_prefix = 'prop_addr_hist_rej_'
-        file_number = str(datetime.now().strftime('%Y%m%d%H%M%S'))
+        # file_number = str(datetime.now().strftime('%Y%m%d%H%M%S'))
+        file_number = '20170301'
         file_suffix = '.dat'
         file_dir = os.environ['REA_DATA']
         file_name = file_prefix + file_number + file_suffix
-        self.rej_rec_file = open(file_dir + '/' + file_name, 'w')
-        print ("Rejected Record File: " + self.rej_rec_file.name)
+        self.rej_rec_file = open(file_dir + '/' + file_name, 'a')
+        # print ("Rejected Record File: " + self.rej_rec_file.name)
 
     def init_cleanup(self):
         self.__clean_table__(PropAddrHistDao.HIST_STG_TABLE)
@@ -54,8 +55,10 @@ class PropAddrHistDao(GenericConnector):
 
     @staticmethod
     def __gen_select_stmt__():
+        batch_size = randint(2, 7)
+        print("batch size: " + str(batch_size))
         return "SELECT PROP_ADDR_ID, REALTOR_URL FROM " + \
-               PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0"
+               PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0 LIMIT " + str(batch_size)
 
     @staticmethod
     def __gen_insert_stmt__():

@@ -15,7 +15,7 @@ class PropAddrHistSpider(scrapy.Spider):
     def __init__(self):
         super(PropAddrHistSpider, self).__init__()
         self.cnx = PropAddrHistDao()
-        self.cnx.init_cleanup()
+        # self.cnx.init_cleanup()
         self.num_urls = 0
         self.num_done_urls = 0
 
@@ -25,9 +25,11 @@ class PropAddrHistSpider(scrapy.Spider):
 
         for (prop_addr_id, url) in urls:
             yield scrapy.Request(url=url, callback=self.parse,
-                                 meta={'prop_addr_id': prop_addr_id})
+                                 meta={'prop_addr_id': prop_addr_id},
+                                 headers={'referer': 'www.google.ca'})
 
     def parse(self, response):
+        # print(response.request.headers)
         rows = response.xpath('//div[@id="ldp-history-price"]//tbody/tr').extract()
         prop_addr_id = response.meta['prop_addr_id']
         self.num_done_urls += 1

@@ -48,6 +48,7 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
+    'scrapy.spidermiddlewares.referer.RefererMiddleware': True
 }
 
 # Enable or disable downloader middlewares
