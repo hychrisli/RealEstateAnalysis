@@ -26,7 +26,7 @@ class PropAddrHistSpider(scrapy.Spider):
         for (prop_addr_id, url) in urls:
             yield scrapy.Request(url=url, callback=self.parse,
                                  meta={'prop_addr_id': prop_addr_id},
-                                 headers={'referer': 'www.google.ca'})
+                                 headers={'referer': 'www.google.com'})
 
     def parse(self, response):
         # print(response.request.headers)
