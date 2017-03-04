@@ -6,22 +6,19 @@ from random import randint
 
 from etl.entities.prop_addr_hist_event import PropAddrHistEvent
 from etl.dao.prop_addr_hist_dao import PropAddrHistDao
-from utility.display import show_progress
+from utility.actions import show_progress
 
 
 class PropAddrHistSpider(scrapy.Spider):
     name = "prop_addr_hist"
 
-    def __init__(self):
+    def __init__(self, batch_size):
         super(PropAddrHistSpider, self).__init__()
         self.cnx = PropAddrHistDao()
-        # self.cnx.init_cleanup()
-        self.num_urls = 0
-        self.num_done_urls = 0
+        self.batch_size = batch_size
 
     def start_requests(self):
-        urls = self.cnx.select_urls()
-        self.num_urls = len(urls)
+        urls = self.cnx.select_url_batch(self.batch_size)
 
         for (prop_addr_id, url) in urls:
             yield scrapy.Request(url=url, callback=self.parse,
@@ -32,7 +29,6 @@ class PropAddrHistSpider(scrapy.Spider):
         # print(response.request.headers)
         rows = response.xpath('//div[@id="ldp-history-price"]//tbody/tr').extract()
         prop_addr_id = response.meta['prop_addr_id']
-        self.num_done_urls += 1
 
         for row in rows:
             cols = etree.HTML(row)
@@ -46,8 +42,6 @@ class PropAddrHistSpider(scrapy.Spider):
             self.cnx.add_prop_addr_hist_event(hist_event)
 
         self.cnx.mark_is_updated(prop_addr_id)
-
-        show_progress(self.num_done_urls, self.num_urls, 1, "processing " + str(prop_addr_id))
 
     def close(self, reason):
         self.cnx.close()

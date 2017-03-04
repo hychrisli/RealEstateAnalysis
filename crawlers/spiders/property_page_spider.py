@@ -1,7 +1,7 @@
 import scrapy
 import re
 from etl.dao.mls_type_dao import MlsTypeDao
-from utility.display import show_progress
+from utility.actions import show_progress
 
 
 class PropertyPageSpider(scrapy.Spider):

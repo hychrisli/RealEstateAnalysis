@@ -21,3 +21,6 @@ class CrawlRunner(object):
         return
 
 
+class BatchDispatcher(object):
+    def __init__(self):
+        return

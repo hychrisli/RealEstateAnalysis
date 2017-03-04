@@ -23,9 +23,13 @@ class PropAddrHistDao(GenericConnector):
     def init_cleanup(self):
         self.__clean_table__(PropAddrHistDao.HIST_STG_TABLE)
 
-    def select_urls(self):
-        select_stmt = self.__gen_select_stmt__()
+    def select_url_batch(self, batch_size):
+        select_stmt = self.__gen_select_url_batch_stmt__(batch_size)
         return self.__select_all__(select_stmt)
+
+    def get_total_num(self):
+        select_stmt = self.__gen_select_cnt_stmt__()
+        return self._select_single_value_(select_stmt)
 
     def add_prop_addr_hist_event(self, hist_event):
 
@@ -54,11 +58,14 @@ class PropAddrHistDao(GenericConnector):
         self.cnx.close()
 
     @staticmethod
-    def __gen_select_stmt__():
-        batch_size = randint(2, 7)
-        print("batch size: " + str(batch_size))
+    def __gen_select_url_batch_stmt__(batch_size):
         return "SELECT PROP_ADDR_ID, REALTOR_URL FROM " + \
                PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0 LIMIT " + str(batch_size)
+
+    @staticmethod
+    def __gen_select_cnt_stmt__():
+        return "SELECT COUNT(*) FROM " + \
+               PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0"
 
     @staticmethod
     def __gen_insert_stmt__():

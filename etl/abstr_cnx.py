@@ -37,3 +37,7 @@ class GenericConnector(object):
     def __select_all__(self, select_stmt):
         self.cursor.execute(select_stmt)
         return self.cursor.fetchall()
+
+    def _select_single_value_(self, select_stmt):
+        self.cursor.execute(select_stmt)
+        return self.cursor.fetchone()[0]

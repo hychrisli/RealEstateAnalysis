@@ -1,7 +1,7 @@
 from ..abstr_cnx import GenericConnector
 from ..routines.addr_verf_etl import AddrVerfEtl
 from pyusps.address_information import OrderedDict
-from utility.display import show_progress
+from utility.actions import show_progress
 
 
 class PropAddrDao(GenericConnector):

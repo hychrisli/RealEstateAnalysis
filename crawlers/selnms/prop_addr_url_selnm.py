@@ -4,23 +4,15 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from etl.dao.prop_addr_dao import PropAddrDao
-from utility.display import show_progress
+from utility.actions import show_progress, rand_wait
 from utility.constants import user_agents
-from utility.calculate import rand_non_repeat_agent
-
-import time
-from random import randint
+from utility.calculate import rand_non_repeat_agent, rand_batch_end_num
 
 
 class PropAddrUrlSelnm:
     agent = None
 
-    MIN_BATCH = 3
-    MAX_BATCH = 10
-
     PAGE_TIME_OUT = 10 # seconds
-    MIN_WAIT_TIME = 10
-    MAX_WAIT_TIME = 30
 
     def __init__(self):
         self.timeout = 10
@@ -52,23 +44,15 @@ class PropAddrUrlSelnm:
         batch_start_num = 0
 
         # Loop through batches
-        while tot_num >= batch_start_num:
+        while tot_num > batch_start_num:
             self.browser = self.__init_browser__()
-            batch_size = randint(PropAddrUrlSelnm.MIN_BATCH, PropAddrUrlSelnm.MAX_BATCH)
-            batch_end_num = batch_start_num + batch_size
-            if batch_end_num > tot_num:
-                batch_end_num = tot_num
-
-            print ("Batch size: " + str(batch_size) +
-                   " | start: " + str(batch_start_num) +
-                   " | end: " + str(batch_end_num))
-
+            batch_end_num = rand_batch_end_num(batch_start_num, tot_num)
             self.__upd_url_batch__(addr_lst[batch_start_num:batch_end_num])
+            self.browser.quit()
 
+            rand_wait("Batch completed")
             show_progress(batch_end_num, tot_num, 1, '\n')
             batch_start_num = batch_end_num
-            self.browser.quit()
-            PropAddrUrlSelnm.__rand_wait__("Batch completed")
 
     def __upd_url_batch__(self, batch):
         url_lst = []
@@ -76,7 +60,7 @@ class PropAddrUrlSelnm:
             url = self.__find_url__(addr)
             url_lst.append((mls_id, url))
             print (url)
-            PropAddrUrlSelnm.__rand_wait__(str(mls_id) + " done")
+            rand_wait(str(mls_id) + " done")
 
         self.prop_cnx.upd_urls(url_lst)
 
@@ -87,7 +71,7 @@ class PropAddrUrlSelnm:
         text_box.clear()
         text_box.send_keys(addr)  # enter text in input
 
-        PropAddrUrlSelnm.__rand_wait__("Home page loaded")
+        rand_wait("Home page loaded")
 
         self.browser.find_element_by_xpath('//button[@class="btn btn-primary js-searchButton"]').click()
         try:
@@ -104,9 +88,3 @@ class PropAddrUrlSelnm:
         PropAddrUrlSelnm.agent = rand_non_repeat_agent(PropAddrUrlSelnm.agent)
         print("User agent: " + str(PropAddrUrlSelnm.agent))
         return user_agents[PropAddrUrlSelnm.agent]
-
-    @staticmethod
-    def __rand_wait__(msg):
-        wait_time = randint(PropAddrUrlSelnm.MIN_WAIT_TIME, PropAddrUrlSelnm.MAX_WAIT_TIME)
-        print (str(msg) + " | Waiting " + str(wait_time) + "s ...")
-        time.sleep(wait_time)
