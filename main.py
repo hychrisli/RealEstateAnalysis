@@ -1,5 +1,6 @@
 from controllers.mls_controller import ApiSearchRunner
 from controllers.mls_controller import PropPageRunner
+from controllers.realtor_controller import PropAddrHistBatchDispatcher
 from etl.routines.mls_prop_etl import MlsPropEtl
 from etl.dao.prop_addr_dao import PropAddrDao
 from etl.routines.prop_addr_etl import PropAddrEtl
@@ -16,22 +17,22 @@ if pid == 0:
 
 os.waitpid(pid, 0)
 
-print ("call_sp_property_incr_insert")
-etl_cnx = MlsPropEtl()
-etl_cnx.call_sp_mls_prop_incr_insert()
+print ("call sp_mls_prop_incr_insert")
+mls_etl_cnx = MlsPropEtl()
+mls_etl_cnx.call_sp_mls_prop_incr_insert()
 
 print ("prop_page_runner")
 prop_page_runner = PropPageRunner()
 prop_page_runner.run()
 
 print ("call sp_prop_del_mls_excld")
-etl_cnx.call_sp_prop_del_mls_excld()
+mls_etl_cnx.call_sp_prop_del_mls_excld()
 
-print ("call sp_property_fact_insert")
-etl_cnx.call_sp_mls_prop_fact_insert()
+print ("call sp_mls_prop_fact_insert")
+mls_etl_cnx.call_sp_mls_prop_fact_insert()
 
-print ("call sp_property_dim_upd")
-etl_cnx.call_sp_mls_prop_dim_upd()
+print ("call sp_mls_prop_dim_upd")
+mls_etl_cnx.call_sp_mls_prop_dim_upd()
 
 print ("PropAddrDao.add_addrs")
 addr_cnx = PropAddrDao()
@@ -45,3 +46,16 @@ url_selnm.upd_urls()
 print ("call sp_prop_addr_fact_upsert")
 prop_addr_etl_cnx = PropAddrEtl()
 prop_addr_etl_cnx.call_sp_prop_addr_fact_upsert()
+
+print ("PropAddrHistBatchDispatcher.dispatch_jobs")
+dispatcher = PropAddrHistBatchDispatcher()
+dispatcher.dispatch_jobs()
+
+print("call sp_prop_addr_hist_incr")
+prop_addr_etl_cnx.call_sp_prop_addr_hist_incr()
+
+print("call sp_prop_addr_hist")
+prop_addr_etl_cnx.call_sp_prop_addr_hist()
+
+print("call sp_mls_status_hist_upd")
+mls_etl_cnx.call_sp_mls_status_hist_upd()

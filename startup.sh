@@ -15,15 +15,6 @@ while true; do
 done
 
 echo "Starting Splash"
-sudo docker run -d -p 8050:8050 scrapinghub/splash &
-SPLASH_PID=`ps -ef | pgrep -f splash`
+sudo docker run -d -p 8050:8050 scrapinghub/splash
 sleep 10
 
-python main.py
-
-sudo kill ${SPLASH_PID}
-echo "Splash stopped"
-
-echo "Stopping Docker with password: "
-sudo systemctl stop docker
-echo "Docker is stopped"

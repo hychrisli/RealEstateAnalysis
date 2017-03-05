@@ -26,9 +26,10 @@ class PropAddrHistSpider(scrapy.Spider):
                                  headers={'referer': 'www.google.com'})
 
     def parse(self, response):
-        # print(response.request.headers)
         rows = response.xpath('//div[@id="ldp-history-price"]//tbody/tr').extract()
         prop_addr_id = response.meta['prop_addr_id']
+        latest_date = self.cnx.get_latest_date(prop_addr_id)
+        print ("processing " + str(prop_addr_id))
 
         for row in rows:
             cols = etree.HTML(row)
@@ -38,7 +39,8 @@ class PropAddrHistSpider(scrapy.Spider):
             hist_event.event = cols.xpath('//td[2]/text()')[0]
             hist_event.set_price(cols.xpath('//td[3]/text()')[0])
             hist_event.set_price_sqft(cols.xpath('//td[4]/text()')[0])
-
+            if latest_date is not None and hist_event.event_date < latest_date:
+                break
             self.cnx.add_prop_addr_hist_event(hist_event)
 
         self.cnx.mark_is_updated(prop_addr_id)

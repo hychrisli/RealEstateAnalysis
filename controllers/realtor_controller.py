@@ -25,7 +25,7 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
         self.cnx = PropAddrHistDao()
 
     def dispatch_jobs(self):
-        self.cnx.init_cleanup()
+        # self.cnx.init_cleanup()
         total_num = self.cnx.get_total_num()
         done_num = 0
         print("Total number of jobs: " + str(total_num))
@@ -42,5 +42,6 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
 
             os.waitpid(pid, 0)
             done_num += batch_size
+            show_progress(done_num, total_num, 1, '')
             rand_wait("Batch finished")
-            show_progress(done_num, total_num, 1, '\n')
+            print ('\n')

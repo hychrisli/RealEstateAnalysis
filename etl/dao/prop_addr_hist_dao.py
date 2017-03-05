@@ -8,6 +8,7 @@ import os
 class PropAddrHistDao(GenericConnector):
     HIST_STG_TABLE = 'prop_addr_hist_stg'
     PROP_ADDR_FACT_TABLE = 'prop_addr_fact'
+    PROP_ADDR_HIST_TABLE = 'prop_addr_hist'
 
     def __init__(self):
         super(PropAddrHistDao, self).__init__()
@@ -29,6 +30,10 @@ class PropAddrHistDao(GenericConnector):
 
     def get_total_num(self):
         select_stmt = self.__gen_select_cnt_stmt__()
+        return self._select_single_value_(select_stmt)
+
+    def get_latest_date(self, prop_addr_id):
+        select_stmt = self.__gen_select_latest_date_stmt__(prop_addr_id)
         return self._select_single_value_(select_stmt)
 
     def add_prop_addr_hist_event(self, hist_event):
@@ -66,6 +71,11 @@ class PropAddrHistDao(GenericConnector):
     def __gen_select_cnt_stmt__():
         return "SELECT COUNT(*) FROM " + \
                PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0"
+
+    @staticmethod
+    def __gen_select_latest_date_stmt__(prop_addr_id):
+        return "SELECT MAX(EVENT_DATE) FROM " + \
+               PropAddrHistDao.PROP_ADDR_HIST_TABLE + " WHERE PROP_ADDR_ID = " + str(prop_addr_id)
 
     @staticmethod
     def __gen_insert_stmt__():
