@@ -43,7 +43,6 @@ print ("PropAddrUrlSelnm.upd_urls")
 url_selnm = PropAddrUrlSelnm()
 url_selnm.upd_urls()
 
-print ("call sp_prop_addr_fact_upsert")
 prop_addr_etl_cnx = PropAddrEtl()
 prop_addr_etl_cnx.call_sp_prop_addr_fact_upsert()
 
@@ -51,10 +50,7 @@ print ("PropAddrHistBatchDispatcher.dispatch_jobs")
 dispatcher = PropAddrHistBatchDispatcher()
 dispatcher.dispatch_jobs()
 
-print("call sp_prop_addr_hist_incr")
 prop_addr_etl_cnx.call_sp_prop_addr_hist_incr()
-
-print("call sp_prop_addr_hist")
 prop_addr_etl_cnx.call_sp_prop_addr_hist()
 
 print("call sp_mls_status_hist_upd")

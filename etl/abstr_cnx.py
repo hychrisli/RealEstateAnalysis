@@ -39,5 +39,13 @@ class GenericConnector(object):
         return self.cursor.fetchall()
 
     def _select_single_value_(self, select_stmt):
+        return self._select_single_row_(select_stmt)[0]
+
+    def _select_single_row_(self, select_stmt):
         self.cursor.execute(select_stmt)
-        return self.cursor.fetchone()[0]
+        return self.cursor.fetchone()
+
+    def _select_count_(self, table):
+        select_stmt = "SELECT COUNT(*) FROM " + table
+        cnt = self._select_single_value_(select_stmt)
+        print ("COUNT [" + table + "] : " + str(cnt))
