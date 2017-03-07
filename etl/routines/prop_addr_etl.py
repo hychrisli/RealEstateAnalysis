@@ -18,6 +18,11 @@ class PropAddrEtl(GenericConnector):
         self.__check_count_hist_stg__()
         self.__check_count_hist_incr__()
 
+    def call_sp_prop_addr_hist_uniq_incr(self):
+        print("call sp_prop_addr_hist_uniq_incr")
+        self.cursor.execute('call sp_prop_addr_hist_uniq_incr')
+        self.__check_count_hist_uniq_incr__()
+
     def call_sp_prop_addr_hist(self):
         cnt = self.__check_hist__()
         print("call sp_prop_addr_hist")

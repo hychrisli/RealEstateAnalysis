@@ -46,6 +46,7 @@ dispatcher = PropAddrHistBatchDispatcher()
 dispatcher.dispatch_jobs()
 
 prop_addr_etl_cnx.call_sp_prop_addr_hist_incr()
+prop_addr_etl_cnx.call_sp_prop_addr_hist_uniq_incr()
 prop_addr_etl_cnx.call_sp_prop_addr_hist()
 mls_etl_cnx.call_sp_mls_status_hist_upd()
 
