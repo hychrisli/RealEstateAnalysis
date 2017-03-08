@@ -3,7 +3,12 @@ from ..abstr_cnx import GenericConnector
 
 class MlsPropEtl(GenericConnector):
 
+    def __init__(self):
+        super(MlsPropEtl, self).__init__()
+        self.before_res = self.__check_count_status_dim__()
+
     def call_sp_mls_prop_incr_insert(self):
+
         print ("call sp_mls_prop_incr_insert")
         self.cursor.execute("CALL sp_mls_prop_incr_insert")
         self.__check_count_prop_incr__()
@@ -21,11 +26,16 @@ class MlsPropEtl(GenericConnector):
         self.cursor.execute("CALL sp_mls_prop_dim_upd")
 
     def call_sp_mls_status_hist_upd(self):
-        before_res = self.__check_count_status_dim__()
         print("call sp_mls_status_hist_upd")
         self.cursor.execute("CALL sp_mls_status_hist_upd")
         after_res = self.__check_count_status_dim__()
-        MlsPropEtl.__diff_status__(before_res, after_res)
+        MlsPropEtl.__diff_status__(self.before_res, after_res)
+
+    def call_sp_mls_price_rpt(self):
+        self._select_count_('mls_price_rpt')
+        print("call sp_mls_price_rpt")
+        self.cursor.execute("CALL sp_mls_price_rpt")
+        self._select_count_('mls_price_rpt')
 
     """Verification"""
 
@@ -34,6 +44,9 @@ class MlsPropEtl(GenericConnector):
 
     def __check_count_status_dim__(self):
         return self.__select_all__(MlsPropEtl.__gen_status_dim_select_stmt__())
+
+    def __check_count_mls_price_rpt(self):
+        self._select_count_('mls_price_rpt')
 
     """SQL Statements"""
 
