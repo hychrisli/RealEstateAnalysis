@@ -10,6 +10,7 @@ import os
 class PropAddrHistRunner(CrawlRunner):
     def __init__(self, agent, batch_size):
         super(PropAddrHistRunner, self).__init__(delay=30, req_per_ip=1, agent=agent)
+        print ("PropAddrHistRunner pid: " + str(os.getpid()))
         print ("My user agent number: " + str(agent))
         self.batch_size = batch_size
 
@@ -25,6 +26,7 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
         self.cnx = PropAddrHistDao()
 
     def dispatch_jobs(self):
+        print ("PropAddrHistBatchDispatcher.dispatch_jobs")
         self.cnx.init_cleanup()
         total_num = self.cnx.get_total_num()
         done_num = 0

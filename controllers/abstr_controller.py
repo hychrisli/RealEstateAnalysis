@@ -24,3 +24,7 @@ class CrawlRunner(object):
 class BatchDispatcher(object):
     def __init__(self):
         return
+
+    @abc.abstractmethod
+    def dispatch_jobs(self):
+        return

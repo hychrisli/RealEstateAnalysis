@@ -1,31 +1,28 @@
-from controllers.mls_controller import ApiSearchRunner
-from controllers.mls_controller import PropPageRunner
+from controllers.mls_controller import ApiSearchRunner, PropPageRunner, MlsDispatcher
 from controllers.realtor_controller import PropAddrHistBatchDispatcher
 from etl.routines.mls_prop_etl import MlsPropEtl
 from etl.dao.prop_addr_dao import PropAddrDao
 from etl.routines.prop_addr_etl import PropAddrEtl
 from crawlers.selnms.prop_addr_url_selnm import PropAddrUrlSelnm
 
-import os
+""" Initialize Connections """
 
 mls_etl_cnx = MlsPropEtl()
 prop_addr_etl_cnx = PropAddrEtl()
 
-pid = os.fork()
-if pid == 0:
-    print ("api_search_runner")
-    api_search_runner = ApiSearchRunner()
-    api_search_runner.run()
-    os._exit(0)
 
-os.waitpid(pid, 0)
+""" API Search spider within a child process """
+api_search_dispatcher = MlsDispatcher(ApiSearchRunner)
+api_search_dispatcher.dispatch_jobs()
 
+""" Populate mls_prop_incr table """
 mls_etl_cnx.call_sp_mls_prop_incr_insert()
 
-print ("prop_page_runner")
-prop_page_runner = PropPageRunner()
-prop_page_runner.run()
+""" Property page spider within a child process """
+prop_page_dispatcher = MlsDispatcher(PropPageRunner)
+prop_page_dispatcher.dispatch_jobs()
 
+""" MLS ETL stored procedures"""
 mls_etl_cnx.call_sp_prop_del_mls_excld()
 mls_etl_cnx.call_sp_mls_prop_fact_insert()
 mls_etl_cnx.call_sp_mls_prop_dim_upd()
@@ -41,9 +38,9 @@ url_selnm.upd_urls()
 
 prop_addr_etl_cnx.call_sp_prop_addr_fact_upsert()
 
-print ("PropAddrHistBatchDispatcher.dispatch_jobs")
-dispatcher = PropAddrHistBatchDispatcher()
-dispatcher.dispatch_jobs()
+""" Property address history spider within child processes """
+prop_addr_hist_dispatcher = PropAddrHistBatchDispatcher()
+prop_addr_hist_dispatcher.dispatch_jobs()
 
 prop_addr_etl_cnx.call_sp_prop_addr_hist_incr()
 prop_addr_etl_cnx.call_sp_prop_addr_hist_uniq_incr()

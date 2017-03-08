@@ -1,4 +1,4 @@
-from controllers.abstr_controller import CrawlRunner
+from controllers.abstr_controller import CrawlRunner, BatchDispatcher
 from crawlers.spiders.property_page_spider import PropertyPageSpider
 from crawlers.spiders.api_search_spider import ApiSearchSpider
 
@@ -23,3 +23,20 @@ class PropPageRunner(CrawlRunner):
     def run(self):
         self.process.crawl(PropertyPageSpider)
         self.process.start()
+
+
+class MlsDispatcher(BatchDispatcher):
+
+    def __init__(self, runner_class):
+        super(MlsDispatcher, self).__init__()
+        self.runner_class = runner_class
+
+    def dispatch_jobs(self):
+        print ("MlsDispatcher.dispatch_jobs")
+        pid = os.fork()
+        if pid == 0:
+            runner = self.runner_class()
+            runner.run()
+            os._exit(0)
+
+        os.waitpid(pid, 0)
