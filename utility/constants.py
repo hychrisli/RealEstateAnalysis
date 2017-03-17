@@ -21,6 +21,7 @@ user_agents = {
 
 PROP_ADDR_PRICE_MONTH_RPT_TAB = 'prop_addr_price_month_rpt'
 PROP_ADDR_PRICE_DAY_RPT_STG_TAB = 'prop_addr_price_day_rpt_stg'
+PROP_ADDR_PRICE_RPT_TAB = 'prop_addr_price_rpt'
 
 
 """ views """
