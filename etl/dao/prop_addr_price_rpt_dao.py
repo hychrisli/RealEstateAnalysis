@@ -19,15 +19,26 @@ class PropAddrPriceRpt(GenericConnector):
         self.__clean_table__(PROP_ADDR_PRICE_RPT_TAB)
         area_ids = self.__select_area_ids__()
 
-        # Load default batch
+        # Load default batch for the entire bay area
         self.__load_batch__()
+        self.__print_status__()
 
-        # print(sample_res)
-        # cur_county_id = 0
-        # for (county_id, city_id, zipcode) in area_ids:
-        #     if cur_county_id != county_id:
-        #         self.__load_batch__(county_id)
-        #         cur_county_id = county_id
+        cur_county_id = 0
+        cur_city_id = 0
+        for (county_id, city_id, zipcode) in area_ids:
+
+            if cur_county_id != county_id:
+                self.__load_batch__(county_id)
+                cur_county_id = county_id
+                self.__print_status__(county_id)
+
+            if cur_city_id != city_id:
+                self.__load_batch__(cur_county_id, city_id)
+                cur_city_id = city_id
+                self.__print_status__(cur_county_id, city_id)
+
+            self.__load_batch__(county_id, city_id, zipcode)
+            self.__print_status__(cur_county_id, city_id, zipcode)
 
     def __select_area_ids__(self):
         return self.__select_all__('SELECT COUNTY_ID, CITY_ID, ZIPCODE FROM ' + V_AREA_IDS)
@@ -51,14 +62,15 @@ class PropAddrPriceRpt(GenericConnector):
     def __sample_records__(rpt_res):
         pre_price = 0.0
         sample_res = []
-        for record in rpt_res[:-1]:
-            avg_price_stuct_sqft = float(record[PropAddrPriceRpt.IDX_AVG_PRICE_STRUCT_SQFT])
+        if len(rpt_res) > 1:
+            for record in rpt_res[:-1]:
+                avg_price_stuct_sqft = float(record[PropAddrPriceRpt.IDX_AVG_PRICE_STRUCT_SQFT])
 
-            if avg_price_stuct_sqft > float(pre_price) + PropAddrPriceRpt.SQFT_PRICE_INTVL:
-                sample_res.append(record)
-                pre_price = avg_price_stuct_sqft
+                if avg_price_stuct_sqft > float(pre_price) + PropAddrPriceRpt.SQFT_PRICE_INTVL:
+                    sample_res.append(record)
+                    pre_price = avg_price_stuct_sqft
 
-        sample_res.append(rpt_res[-1])
+            sample_res.append(rpt_res[-1])
         return sample_res
 
     @staticmethod
@@ -105,3 +117,8 @@ class PropAddrPriceRpt(GenericConnector):
                "ROUND(SUM(AVG_PRICE_STRUCT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_STRUCT_SQFT, " \
                "ROUND(SUM(AVG_PRICE_TOT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_TOT_SQFT " \
                "FROM " + PROP_ADDR_PRICE_MONTH_RPT_TAB + " "
+
+    @staticmethod
+    def __print_status__(county_id=0, city_id=0, zipcode=0):
+        print("Finished loading county_id: " + str(county_id)
+              + " | city_id: " + str(city_id) + " | zipcode: " + str(zipcode))
