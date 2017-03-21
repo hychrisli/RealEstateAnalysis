@@ -8,11 +8,14 @@ from utility.actions import show_progress, rand_wait
 from utility.constants import user_agents
 from utility.calculate import rand_non_repeat_agent, rand_batch_end_num
 
+import sys
+
 
 class PropAddrUrlSelnm:
     agent = None
 
     PAGE_TIME_OUT = 10 # seconds
+    MAX_TRY_NUM = 3
 
     def __init__(self):
         self.timeout = 10
@@ -67,7 +70,27 @@ class PropAddrUrlSelnm:
     def __find_url__(self, addr):
         self.browser.delete_all_cookies()
         self.browser.get("https://www.realtor.com")
-        text_box = self.browser.find_element_by_xpath('//input[@id="searchBox"]')  # input selector
+
+        num_try = 0
+
+        while True:
+            self.browser.get("https://www.realtor.com")
+            num_try += 1
+            try:
+                element_present = EC.presence_of_element_located((By.ID, "searchBox"))
+                WebDriverWait(self.browser, self.timeout).until(element_present)
+                break
+            except TimeoutException:
+                if num_try < PropAddrUrlSelnm.MAX_TRY_NUM:
+                    self.browser.get("https://www.google.com")
+                    print ("Home page not available. Will refresh and try it again")
+                    rand_wait("Wait to try again....")
+                else:
+                    print ("Can't load home page")
+                    sys.exit(1)
+
+        text_box = self.browser.find_element_by_xpath('//input[@id="searchBox"]')
+
         text_box.clear()
         text_box.send_keys(addr)  # enter text in input
 
