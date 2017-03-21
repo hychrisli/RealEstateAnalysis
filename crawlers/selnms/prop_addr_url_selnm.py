@@ -28,6 +28,7 @@ class PropAddrUrlSelnm:
         fp.set_preference('permissions.default.image', 2)
         fp.set_preference('dom.ipc.plugins.enabled.libflashplayer.so', False)
         fp.set_preference('webdriver.load.strategy', 'unstable')
+        # fp.set_preference('network.cookie.cookieBehavior', 2)
         fp.set_preference('javascript.enabled', False)
         fp.set_preference("general.useragent.override", PropAddrUrlSelnm.__gen_user_agent__())
         browser = webdriver.Firefox(firefox_profile=fp)
@@ -68,9 +69,7 @@ class PropAddrUrlSelnm:
         self.prop_cnx.upd_urls(url_lst)
 
     def __find_url__(self, addr):
-        self.browser.delete_all_cookies()
-        self.browser.get("https://www.realtor.com")
-
+        # self.browser.delete_all_cookies()
         num_try = 0
 
         while True:
@@ -103,6 +102,9 @@ class PropAddrUrlSelnm:
         except TimeoutException:
             print "Timed out waiting for page to load"
             return "Not Available"
+
+        rand_wait("Pretend Browsing", 5, 10)
+        self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
 
         return self.browser.current_url
 
