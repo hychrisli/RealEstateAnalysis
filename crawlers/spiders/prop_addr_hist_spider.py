@@ -35,6 +35,7 @@ class PropAddrHistSpider(scrapy.Spider):
             cols = etree.HTML(row)
             hist_event = PropAddrHistEvent()
             hist_event.prop_addr_id = prop_addr_id
+            # print(cols.xpath('//td/text()'))
             hist_event.set_date(cols.xpath('//td[1]/text()')[0])
             hist_event.event = cols.xpath('//td[2]/text()')[0]
             hist_event.set_price(cols.xpath('//td[3]/text()')[0])
