@@ -1,4 +1,4 @@
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -105,6 +105,13 @@ class PropAddrUrlSelnm:
 
         rand_wait("Pretend Browsing", 5, 10)
         self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
+
+        try:
+            alert = self.browser.switch_to.alert
+            alert.dismiss()
+            print "\nI need no survey\n"
+        except NoAlertPresentException:
+            pass
 
         return self.browser.current_url
 
