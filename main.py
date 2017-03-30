@@ -2,14 +2,17 @@ from controllers.mls_controller import ApiSearchRunner, PropPageRunner, MlsDispa
 from controllers.realtor_controller import PropAddrHistBatchDispatcher
 from etl.routines.mls_prop_etl import MlsPropEtl
 from etl.dao.prop_addr_dao import PropAddrDao
+from etl.dao.prop_addr_price_rpt_dao import PropAddrPriceRpt
 from etl.routines.prop_addr_etl import PropAddrEtl
+from etl.routines.prop_addr_price_rpt_etl import PropAddrPriceRptEtl
 from crawlers.selnms.prop_addr_url_selnm import PropAddrUrlSelnm
 
 """ Initialize Connections """
 
 mls_etl_cnx = MlsPropEtl()
 prop_addr_etl_cnx = PropAddrEtl()
-
+prop_month_rpt_cnx = PropAddrPriceRptEtl()
+prop_rpt_cnx = PropAddrPriceRpt()
 
 """ API Search spider within a child process """
 api_search_dispatcher = MlsDispatcher(ApiSearchRunner)
@@ -47,6 +50,13 @@ prop_addr_etl_cnx.call_sp_prop_addr_hist_uniq_incr()
 prop_addr_etl_cnx.call_sp_prop_addr_hist()
 mls_etl_cnx.call_sp_mls_status_hist_upd()
 mls_etl_cnx.call_sp_mls_price_rpt()
+mls_etl_cnx.call_sp_mls_daily_rpt()
+
+""" Property Address Price Report"""
+prop_month_rpt_cnx.run()
+prop_rpt_cnx.load_prop_addr_price_rpt()
 
 mls_etl_cnx.close()
 prop_addr_etl_cnx.close()
+prop_month_rpt_cnx.close()
+prop_rpt_cnx.close()

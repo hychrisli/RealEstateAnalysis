@@ -1,4 +1,5 @@
 from ..abstr_cnx import GenericConnector
+from utility.constants import MLS_DAILY_RPT_TAB
 
 
 class MlsPropEtl(GenericConnector):
@@ -36,6 +37,11 @@ class MlsPropEtl(GenericConnector):
         print("call sp_mls_price_rpt")
         self.cursor.execute("CALL sp_mls_price_rpt")
         self._select_count_('mls_price_rpt')
+
+    def call_sp_mls_daily_rpt(self):
+        print("call sp_" + MLS_DAILY_RPT_TAB)
+        self.cursor.execute("CALL sp_" + MLS_DAILY_RPT_TAB)
+        self._select_count_(MLS_DAILY_RPT_TAB)
 
     """Verification"""
 
