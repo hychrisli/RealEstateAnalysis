@@ -1,4 +1,4 @@
-from selenium.common.exceptions import TimeoutException, NoAlertPresentException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -70,8 +70,15 @@ class PropAddrUrlSelnm:
 
     def __find_url__(self, addr):
         # self.browser.delete_all_cookies()
-        num_try = 0
 
+        self.__load_home__()
+        self.__search_redirect_url__(addr)
+        self.__pretend__()
+
+        return self.browser.current_url
+
+    def __load_home__(self):
+        num_try = 0
         while True:
             self.browser.get("https://www.realtor.com")
             num_try += 1
@@ -88,35 +95,45 @@ class PropAddrUrlSelnm:
                     print ("Can't load home page")
                     sys.exit(1)
 
+    def __search_redirect_url__(self, addr):
         text_box = self.browser.find_element_by_xpath('//input[@id="searchBox"]')
-
         text_box.clear()
         text_box.send_keys(addr)  # enter text in input
-
-        rand_wait("Home page loaded")
+        rand_wait("Wait to click search")
 
         self.browser.find_element_by_xpath('//button[@class="btn btn-primary js-searchButton"]').click()
         try:
             element_present = EC.presence_of_element_located((By.CLASS_NAME, "ldp-header-price"))
             WebDriverWait(self.browser, self.timeout).until(element_present)
         except TimeoutException:
-            print "Timed out waiting for page to load"
+            print "Timed out waiting for property page to load"
             return "Not Available"
 
+    def __pretend__(self):
         rand_wait("Pretend Browsing", 5, 10)
+        self.__dismiss_survey__()
         self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
+        self.__dismiss_survey__()
 
+    def __dismiss_survey__(self):
         try:
-            alert = self.browser.switch_to.alert
-            alert.dismiss()
-            print "\nI need no survey\n"
-        except NoAlertPresentException:
-            pass
+            self.browser.find_element_by_id('acsMainInvite')
+            print "\nHere comes the survey"
 
-        return self.browser.current_url
+            try:
+                self.browser.find_element_by_xpath(
+                    '//div[@id="acsMainInvite"]//a[@title="No, thanks"]').click()
+                print "Dismissed survey\n"
+
+            except NoSuchElementException:
+                print "Can't dismiss survey\n"
+
+        except NoSuchElementException:
+            pass
 
     @staticmethod
     def __gen_user_agent__():
         PropAddrUrlSelnm.agent = rand_non_repeat_agent(PropAddrUrlSelnm.agent)
         print("User agent: " + str(PropAddrUrlSelnm.agent))
         return user_agents[PropAddrUrlSelnm.agent]
+

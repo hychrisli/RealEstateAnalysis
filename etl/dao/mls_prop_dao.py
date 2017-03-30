@@ -1,4 +1,5 @@
 import math
+import mysql.connector
 from ..abstr_cnx import GenericConnector
 
 
@@ -18,14 +19,14 @@ class MlsPropDao(GenericConnector):
                       "%(list_price)s, %(list_status)s, %(url)s)"
         values = []
         for prop in property_lst:
-            # try:
-            #     self.cursor.execute(insert_stmt, PropertyConnector.__gen_insert_value__(prop))
-            # except Exception as e:
-            #     prop.print_details()
-            #     print (e)
-            values.append(MlsPropDao.__gen_insert_value__(prop))
+            try:
+                self.cursor.execute(insert_stmt, MlsPropDao.__gen_insert_value__(prop))
+            except mysql.connector.Error as e:
+                prop.print_details()
+                print (e)
+            # values.append(MlsPropDao.__gen_insert_value__(prop))
 
-        self.cursor.executemany(insert_stmt, values)
+        # self.cursor.executemany(insert_stmt, values)
 
     @staticmethod
     def __gen_insert_value__(prop):
