@@ -118,7 +118,7 @@ class PropAddrUrlSelnm:
     def __dismiss_survey__(self):
         try:
             self.browser.find_element_by_id('acsMainInvite')
-            print "\nHere comes the survey"
+            rand_wait("Here comes the survey", 5, 10)
 
             try:
                 self.browser.find_element_by_xpath(

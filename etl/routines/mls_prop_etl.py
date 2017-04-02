@@ -6,7 +6,6 @@ class MlsPropEtl(GenericConnector):
 
     def __init__(self):
         super(MlsPropEtl, self).__init__()
-        self.before_res = self.__check_count_status_dim__()
 
     def call_sp_mls_prop_incr_insert(self):
 
@@ -29,8 +28,6 @@ class MlsPropEtl(GenericConnector):
     def call_sp_mls_status_hist_upd(self):
         print("call sp_mls_status_hist_upd")
         self.cursor.execute("CALL sp_mls_status_hist_upd")
-        after_res = self.__check_count_status_dim__()
-        MlsPropEtl.__diff_status__(self.before_res, after_res)
 
     def call_sp_mls_price_rpt(self):
         self._select_count_('mls_price_rpt')
@@ -48,7 +45,7 @@ class MlsPropEtl(GenericConnector):
     def __check_count_prop_incr__(self):
         self._select_count_('mls_prop_incr')
 
-    def __check_count_status_dim__(self):
+    def check_count_status_dim(self):
         return self.__select_all__(MlsPropEtl.__gen_status_dim_select_stmt__())
 
     def __check_count_mls_price_rpt(self):
@@ -62,7 +59,7 @@ class MlsPropEtl(GenericConnector):
                "GROUP BY status_event_id ORDER BY status_event_id"
 
     @staticmethod
-    def __diff_status__(before, after):
+    def diff_status(before, after):
 
         length = len(before)
 
