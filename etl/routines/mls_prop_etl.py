@@ -4,9 +4,6 @@ from utility.constants import MLS_DAILY_RPT_TAB
 
 class MlsPropEtl(GenericConnector):
 
-    def __init__(self):
-        super(MlsPropEtl, self).__init__()
-
     def call_sp_mls_prop_incr_insert(self):
 
         print ("call sp_mls_prop_incr_insert")
