@@ -1,6 +1,8 @@
 from random import randint
 import time
 import httplib, urllib
+import smtplib
+from email.mime.text import MIMEText
 import os
 
 
@@ -29,9 +31,13 @@ def rand_wait(msg, min_wait=10, max_wait=30):
     time.sleep(wait_time)
 
 
-def except_response(e):
-    print(e)
+def except_response(err_msg):
+    print(err_msg)
     print("Exception thrown. Continue? Y/N ")
+    try:
+        send_email("Exception", err_msg)
+    except smtplib.SMTPAuthenticationError:
+        print ("Failed to send email notification")
 
     valid = {"yes": True, "y": True, "ye": True}
     choice = raw_input().lower()
@@ -52,3 +58,18 @@ def push_notification(msg):
                      "message": msg,
                  }), {"Content-type": "application/x-www-form-urlencoded"})
     conn.getresponse()
+
+
+def send_email(msg_subject, msg_body):
+    app_user = os.environ['APP_USER']
+    app_pass = os.environ['GOGL_APP_PASS']
+    email = os.environ['EMAIL']
+    msg = MIMEText(msg_body)
+    msg['Subject'] = 'RET ALERT: ' + msg_subject
+
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.ehlo()
+    server.starttls()
+    server.login(app_user, app_pass)
+    server.sendmail(email, email, msg.as_string())
+    server.quit()

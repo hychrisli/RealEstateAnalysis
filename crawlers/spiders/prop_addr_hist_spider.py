@@ -1,12 +1,12 @@
 import scrapy
-import time
+from scrapy.selector import Selector
 
 from lxml import etree
 from random import randint
 
 from etl.entities.prop_addr_hist_event import PropAddrHistEvent
 from etl.dao.prop_addr_hist_dao import PropAddrHistDao
-from utility.actions import show_progress
+from utility.actions import show_progress,except_response
 
 
 class PropAddrHistSpider(scrapy.Spider):
@@ -26,6 +26,10 @@ class PropAddrHistSpider(scrapy.Spider):
                                  headers={'referer': 'www.google.com'})
 
     def parse(self, response):
+        input_tag = Selector(response).xpath("//input").extract_first()
+        if not input_tag:
+            except_response("No Input found in page. User may be locked")
+
         rows = response.xpath('//div[@id="ldp-history-price"]//tbody/tr').extract()
         prop_addr_id = response.meta['prop_addr_id']
         latest_date = self.cnx.get_latest_date(prop_addr_id)

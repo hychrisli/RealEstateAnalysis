@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from etl.dao.prop_addr_dao import PropAddrDao
-from utility.actions import show_progress, rand_wait
+from utility.actions import show_progress, rand_wait, except_response
 from utility.constants import user_agents
 from utility.calculate import rand_non_repeat_agent, rand_batch_end_num
 
@@ -73,7 +73,6 @@ class PropAddrUrlSelnm:
 
         self.__load_home__()
         self.__search_redirect_url__(addr)
-        self.__pretend__()
 
         return self.browser.current_url
 
@@ -93,7 +92,7 @@ class PropAddrUrlSelnm:
                     rand_wait("Wait to try again....")
                 else:
                     print ("Can't load home page")
-                    sys.exit(1)
+                    except_response("Can't load home page")
 
     def __search_redirect_url__(self, addr):
         text_box = self.browser.find_element_by_xpath('//input[@id="searchBox"]')
@@ -105,6 +104,7 @@ class PropAddrUrlSelnm:
         try:
             element_present = EC.presence_of_element_located((By.CLASS_NAME, "ldp-header-price"))
             WebDriverWait(self.browser, self.timeout).until(element_present)
+            self.__pretend__()
         except TimeoutException:
             print "Timed out waiting for property page to load"
             return "Not Available"
