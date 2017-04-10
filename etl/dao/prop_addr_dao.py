@@ -57,7 +57,7 @@ class PropAddrDao(GenericConnector):
 
     @staticmethod
     def __gen_select_mls_addr_view_stmt__():
-        return "SELECT MLS_ID, AREA_ID, ADDR, CITY, STATE FROM " \
+        return "SELECT MLS_ID, AREA_ID, ADDR, CITY, STATE, URL FROM " \
                + PropAddrDao.MLS_ADDR_VIEW
 
     @staticmethod
@@ -77,7 +77,7 @@ class PropAddrDao(GenericConnector):
         addr_dict_lst = []
         id_lst = []
 
-        for (mls_id, area_id, addr, city, state) in addrs:
+        for (mls_id, area_id, addr, city, state, url) in addrs:
             addr_dict = dict([
                 ('address', addr),
                 ('city', city),
@@ -95,18 +95,7 @@ class PropAddrDao(GenericConnector):
         return values
 
     @staticmethod
-    def __gen_insert_value__(ids, res):
-        value = {
-            'mls_id': ids[0],
-            'area_id': ids[1],
-            'addr': res['address']
-        }
-        return value
+    def __incr_records__(sel_rows):
+        records = []
 
-    @staticmethod
-    def __gen_upd_url_vaue__(mls_id, url):
-        value = {
-            'mls_id': mls_id,
-            'url': url
-        }
-        return value
+        return records
