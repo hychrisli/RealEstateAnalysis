@@ -2,9 +2,9 @@ from controllers.mls_controller import ApiSearchRunner, PropPageRunner, MlsDispa
 from controllers.realtor_controller import PropAddrHistBatchDispatcher
 from etl.routines.mls_prop_etl import MlsPropEtl
 from etl.dao.prop_addr_dao import PropAddrDao
-from etl.dao.prop_addr_price_rpt_dao import PropAddrPriceRpt
+
 from etl.routines.prop_addr_etl import PropAddrEtl
-from etl.routines.prop_addr_price_rpt_etl import PropAddrPriceRptEtl
+from etl.routines.mls_price_month_rpt_etl import MlsPriceMonthRptEtl
 
 
 """ API Search spider within a child process """
@@ -57,10 +57,11 @@ mls_etl_cnx.diff_status(before_res, after_res)
 mls_etl_cnx.close()
 
 """ Property Address Price Report"""
-prop_month_rpt_cnx = PropAddrPriceRptEtl()
-prop_month_rpt_cnx.run()
-prop_month_rpt_cnx.close()
+# No more history updates, no need to run
+# prop_month_rpt_cnx = PropAddrPriceRptEtl()
+# prop_month_rpt_cnx.run()
+# prop_month_rpt_cnx.close()
 
-prop_rpt_cnx = PropAddrPriceRpt()
-prop_rpt_cnx.load_prop_addr_price_rpt()
-prop_rpt_cnx.close()
+mls_price_month_rpt_etl_cnx = MlsPriceMonthRptEtl()
+mls_price_month_rpt_etl_cnx.call_sp_mls_price_month_rpt()
+mls_price_month_rpt_etl_cnx.close()

@@ -39,7 +39,7 @@ class PropAddrHistSpider(scrapy.Spider):
 
         if (event is None) or (price is None):
             print (str(prop_addr_id) + ' | page not found: ' + response.meta['url'])
-            self.cnx.record_removed_mls(prop_addr_id)
+            self.cnx.add_rmv_addr_id(prop_addr_id)
         else:
             hist_event = PropAddrHistEvent()
             hist_event.prop_addr_id = prop_addr_id

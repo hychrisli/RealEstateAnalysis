@@ -30,11 +30,12 @@ user_agents = {
 """ tables """
 
 MLS_DAILY_RPT_TAB = "mls_daily_rpt"
+MLS_PRICE_MONTH_RPT_TAB = 'mls_price_month_rpt'
 
 PROP_ADDR_PRICE_MONTH_RPT_TAB = 'prop_addr_price_month_rpt'
 PROP_ADDR_PRICE_DAY_RPT_STG_TAB = 'prop_addr_price_day_rpt_stg'
 PROP_ADDR_PRICE_RPT_TAB = 'prop_addr_price_rpt'
 
-
 """ views """
 V_AREA_IDS = 'v_area_ids'
+V_PRICE_MONTH_RPT='v_price_month_rpt'

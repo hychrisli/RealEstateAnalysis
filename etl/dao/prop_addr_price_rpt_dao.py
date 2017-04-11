@@ -1,9 +1,9 @@
 from ..abstr_cnx import GenericConnector
-from utility.constants import PROP_ADDR_PRICE_MONTH_RPT_TAB, PROP_ADDR_PRICE_RPT_TAB
+from utility.constants import PROP_ADDR_PRICE_RPT_TAB, V_PRICE_MONTH_RPT
 from utility.constants import V_AREA_IDS
 
 
-class PropAddrPriceRpt(GenericConnector):
+class PropAddrPriceRptDao(GenericConnector):
 
     SQFT_PRICE_INTVL = 10.0
     IDX_AVG_PRICE_STRUCT_SQFT = 6
@@ -12,8 +12,8 @@ class PropAddrPriceRpt(GenericConnector):
     PROP_TYPE_IDS = range(0, 6)
 
     def __init__(self):
-        super(PropAddrPriceRpt, self).__init__()
-        self.insert_stmt = PropAddrPriceRpt.__gen_insert_stmt__()
+        super(PropAddrPriceRptDao, self).__init__()
+        self.insert_stmt = PropAddrPriceRptDao.__gen_insert_stmt__()
 
     def load_prop_addr_price_rpt(self):
         self.__clean_table__(PROP_ADDR_PRICE_RPT_TAB)
@@ -45,10 +45,10 @@ class PropAddrPriceRpt(GenericConnector):
 
     def __load_batch__(self, county_id=0, city_id=0, zipcode=0):
 
-        for prop_type_id in PropAddrPriceRpt.PROP_TYPE_IDS:
-            select_stmt = PropAddrPriceRpt.__gen_sample_select_stmt__(county_id, city_id, zipcode, prop_type_id)
+        for prop_type_id in PropAddrPriceRptDao.PROP_TYPE_IDS:
+            select_stmt = PropAddrPriceRptDao.__gen_sample_select_stmt__(county_id, city_id, zipcode, prop_type_id)
             rpt_res = self.__select_all__(select_stmt)
-            sample_res = PropAddrPriceRpt.__sample_records__(rpt_res)
+            sample_res = PropAddrPriceRptDao.__sample_records__(rpt_res)
             self.cursor.executemany(self.insert_stmt, sample_res)
 
     @staticmethod
@@ -64,9 +64,9 @@ class PropAddrPriceRpt(GenericConnector):
         sample_res = []
         if len(rpt_res) > 1:
             for record in rpt_res[:-1]:
-                avg_price_stuct_sqft = float(record[PropAddrPriceRpt.IDX_AVG_PRICE_STRUCT_SQFT])
+                avg_price_stuct_sqft = float(record[PropAddrPriceRptDao.IDX_AVG_PRICE_STRUCT_SQFT])
 
-                if avg_price_stuct_sqft > float(pre_price) + PropAddrPriceRpt.SQFT_PRICE_INTVL:
+                if avg_price_stuct_sqft > float(pre_price) + PropAddrPriceRptDao.SQFT_PRICE_INTVL:
                     sample_res.append(record)
                     pre_price = avg_price_stuct_sqft
 
@@ -79,13 +79,13 @@ class PropAddrPriceRpt(GenericConnector):
         where_clause = ""
         groupby_clause = ""
 
-        (where_clause, groupby_clause) = PropAddrPriceRpt.__extend_clauses__(
+        (where_clause, groupby_clause) = PropAddrPriceRptDao.__extend_clauses__(
             where_clause, groupby_clause, "COUNTY_ID", county_id)
-        (where_clause, groupby_clause) = PropAddrPriceRpt.__extend_clauses__(
+        (where_clause, groupby_clause) = PropAddrPriceRptDao.__extend_clauses__(
             where_clause, groupby_clause, "CITY_ID", city_id)
-        (where_clause, groupby_clause) = PropAddrPriceRpt.__extend_clauses__(
+        (where_clause, groupby_clause) = PropAddrPriceRptDao.__extend_clauses__(
             where_clause, groupby_clause, "ZIPCODE", zipcode)
-        (where_clause, groupby_clause) = PropAddrPriceRpt.__extend_clauses__(
+        (where_clause, groupby_clause) = PropAddrPriceRptDao.__extend_clauses__(
             where_clause, groupby_clause, "PROP_TYPE_ID", prop_type_id)
 
         if groupby_clause:
@@ -93,7 +93,7 @@ class PropAddrPriceRpt(GenericConnector):
         else:
             groupby_clause = " GROUP BY RPT_DATE"
 
-        return PropAddrPriceRpt.__get_sample_select_part__(county_id, city_id, zipcode, prop_type_id) \
+        return PropAddrPriceRptDao.__get_sample_select_part__(county_id, city_id, zipcode, prop_type_id) \
             + where_clause + groupby_clause
 
     @staticmethod
@@ -116,7 +116,7 @@ class PropAddrPriceRpt(GenericConnector):
                "ROUND(SUM(AVG_PRICE * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE, " \
                "ROUND(SUM(AVG_PRICE_STRUCT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_STRUCT_SQFT, " \
                "ROUND(SUM(AVG_PRICE_TOT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_TOT_SQFT " \
-               "FROM " + PROP_ADDR_PRICE_MONTH_RPT_TAB + " "
+               "FROM " + V_PRICE_MONTH_RPT + " "
 
     @staticmethod
     def __print_status__(county_id=0, city_id=0, zipcode=0):
