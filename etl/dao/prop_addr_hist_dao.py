@@ -7,6 +7,7 @@ class PropAddrHistDao(GenericConnector):
     HIST_STG_TABLE = 'prop_addr_hist_stg'
     PROP_ADDR_FACT_TABLE = 'prop_addr_fact'
     PROP_ADDR_HIST_TABLE = 'prop_addr_hist'
+    PROP_ADDR_MLS_REMOVED_TABLE = 'prop_addr_removed_mls_lkp'
 
     def __init__(self):
         super(PropAddrHistDao, self).__init__()
@@ -55,6 +56,10 @@ class PropAddrHistDao(GenericConnector):
         self.cursor.execute(upd_stmt, upd_value)
         self.rej_rec_file.flush()
 
+    def record_removed_mls(self, prop_addr_id):
+        insert_stmt = self.__gen_mls_removed_insert_stmt__()
+        self.cursor.execute(insert_stmt, self.__gen_upd_value__(prop_addr_id))
+
     def close(self):
         self.rej_rec_file.close()
         self.cursor.close()
@@ -101,3 +106,8 @@ class PropAddrHistDao(GenericConnector):
     @staticmethod
     def __gen_upd_value__(prop_addr_id):
         return {'prop_addr_id': prop_addr_id}
+
+    @staticmethod
+    def __gen_mls_removed_insert_stmt__():
+        return "INSERT INTO " + PropAddrHistDao.PROP_ADDR_MLS_REMOVED_TABLE + \
+               " (PROP_ADDR_ID) VALUES (%(prop_addr_id)s)"

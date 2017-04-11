@@ -27,27 +27,27 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
 
     def dispatch_jobs(self):
         print ("PropAddrHistBatchDispatcher.dispatch_jobs")
-        self.cnx.init_cleanup()
+        # self.cnx.init_cleanup()
         total_num = self.cnx.get_total_num()
         done_num = 0
         print("Total number of jobs: " + str(total_num))
         agent = None
 
-        agent = rand_non_repeat_agent(agent)
-        hist_runner = PropAddrHistRunner(agent, total_num)
-        hist_runner.run()
+        # agent = rand_non_repeat_agent(agent)
+        # hist_runner = PropAddrHistRunner(agent, total_num)
+        # hist_runner.run()
 
-        # while total_num > done_num:
-        #     agent = rand_non_repeat_agent(agent)
-        #     batch_size = rand_batch_size()
-        #     pid = os.fork()
-        #     if pid == 0:
-        #         hist_runner = PropAddrHistRunner(agent, batch_size)
-        #         hist_runner.run()
-        #         os._exit(0)
-        #
-        #     os.waitpid(pid, 0)
-        #     done_num += batch_size
-        #     show_progress(done_num, total_num, 1, '')
-        #     rand_wait("Batch finished")
-        #     print ('\n')
+        while total_num > done_num:
+            agent = rand_non_repeat_agent(agent)
+            batch_size = rand_batch_size()
+            pid = os.fork()
+            if pid == 0:
+                hist_runner = PropAddrHistRunner(agent, batch_size)
+                hist_runner.run()
+                os._exit(0)
+
+            os.waitpid(pid, 0)
+            done_num += batch_size
+            show_progress(done_num, total_num, 1, '')
+            rand_wait("Batch finished", 5, 10)
+            print ('\n')

@@ -5,7 +5,6 @@ from etl.dao.prop_addr_dao import PropAddrDao
 from etl.dao.prop_addr_price_rpt_dao import PropAddrPriceRpt
 from etl.routines.prop_addr_etl import PropAddrEtl
 from etl.routines.prop_addr_price_rpt_etl import PropAddrPriceRptEtl
-from crawlers.selnms.prop_addr_url_selnm import PropAddrUrlSelnm
 
 
 """ API Search spider within a child process """
