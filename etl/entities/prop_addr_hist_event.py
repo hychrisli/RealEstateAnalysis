@@ -1,12 +1,12 @@
 import re
-from datetime import datetime
+from datetime import datetime,date
 
 
 class PropAddrHistEvent:
 
     def __init__(self):
         self.prop_addr_id = ''
-        self.event_date = ''
+        self.event_date = date.today()
         self.event = ''
         self.price = 0
         self.price_sqft = 0
@@ -14,15 +14,15 @@ class PropAddrHistEvent:
     def set_price(self, val_str):
         self.price = PropAddrHistEvent.__extract_number__(val_str)
 
-    def set_price_sqft(self, val_str):
-        self.price_sqft = PropAddrHistEvent.__extract_number__(val_str)
-
-    def set_date(self, val_str):
-        self.event_date = datetime.strptime(val_str, '%m/%d/%Y').date()
+    def set_event(self, val_str):
+        if str(val_str).lower() == 'sold':
+            self.event = 'Sold'
+        else:
+            self.event = 'Listed'
 
     def to_string(self):
         return (str(self.prop_addr_id) + '|' + str(self.event_date) + '|' + self.event +
-                '|' + str(self.price) + '|' + str(self.price_sqft))
+                '|' + str(self.price))
 
     @staticmethod
     def __extract_number__(val_str):
