@@ -35,11 +35,6 @@ addr_cnx.init_cleanup()
 addr_cnx.add_addrs()
 addr_cnx.close()
 
-
-print ("PropAddrUrlSelnm.upd_urls")
-url_selnm = PropAddrUrlSelnm()
-url_selnm.upd_urls()
-
 prop_addr_etl_cnx = PropAddrEtl()
 prop_addr_etl_cnx.call_sp_prop_addr_fact_upsert()
 prop_addr_etl_cnx.close()

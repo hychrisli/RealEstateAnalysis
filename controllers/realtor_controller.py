@@ -9,7 +9,7 @@ import os
 
 class PropAddrHistRunner(CrawlRunner):
     def __init__(self, agent, batch_size):
-        super(PropAddrHistRunner, self).__init__(delay=30, req_per_ip=1, agent=agent)
+        super(PropAddrHistRunner, self).__init__(delay=5, req_per_ip=1, agent=agent)
         print ("PropAddrHistRunner pid: " + str(os.getpid()))
         print ("My user agent number: " + str(agent))
         self.batch_size = batch_size
@@ -33,17 +33,21 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
         print("Total number of jobs: " + str(total_num))
         agent = None
 
-        while total_num > done_num:
-            agent = rand_non_repeat_agent(agent)
-            batch_size = rand_batch_size()
-            pid = os.fork()
-            if pid == 0:
-                hist_runner = PropAddrHistRunner(agent, batch_size)
-                hist_runner.run()
-                os._exit(0)
+        agent = rand_non_repeat_agent(agent)
+        hist_runner = PropAddrHistRunner(agent, total_num)
+        hist_runner.run()
 
-            os.waitpid(pid, 0)
-            done_num += batch_size
-            show_progress(done_num, total_num, 1, '')
-            rand_wait("Batch finished")
-            print ('\n')
+        # while total_num > done_num:
+        #     agent = rand_non_repeat_agent(agent)
+        #     batch_size = rand_batch_size()
+        #     pid = os.fork()
+        #     if pid == 0:
+        #         hist_runner = PropAddrHistRunner(agent, batch_size)
+        #         hist_runner.run()
+        #         os._exit(0)
+        #
+        #     os.waitpid(pid, 0)
+        #     done_num += batch_size
+        #     show_progress(done_num, total_num, 1, '')
+        #     rand_wait("Batch finished")
+        #     print ('\n')

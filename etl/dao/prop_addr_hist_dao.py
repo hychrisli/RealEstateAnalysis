@@ -1,6 +1,4 @@
 from ..abstr_cnx import GenericConnector
-from random import randint
-
 import mysql.connector
 import os
 
@@ -32,8 +30,8 @@ class PropAddrHistDao(GenericConnector):
         select_stmt = self.__gen_select_cnt_stmt__()
         return self._select_single_value_(select_stmt)
 
-    def get_latest_date(self, prop_addr_id):
-        select_stmt = self.__gen_select_latest_date_stmt__(prop_addr_id)
+    def get_latest_price(self, prop_addr_id):
+        select_stmt = self.__gen_select_latest_price_stmt__(prop_addr_id)
         return self._select_single_value_(select_stmt)
 
     def add_prop_addr_hist_event(self, hist_event):
@@ -73,16 +71,16 @@ class PropAddrHistDao(GenericConnector):
                PropAddrHistDao.PROP_ADDR_FACT_TABLE + " WHERE IS_UPDATED = 0"
 
     @staticmethod
-    def __gen_select_latest_date_stmt__(prop_addr_id):
-        return "SELECT MAX(EVENT_DATE) FROM " + \
+    def __gen_select_latest_price_stmt__(prop_addr_id):
+        return "SELECT MAX(PRICE) FROM " + \
                PropAddrHistDao.PROP_ADDR_HIST_TABLE + " WHERE PROP_ADDR_ID = " + str(prop_addr_id)
 
     @staticmethod
     def __gen_insert_stmt__():
         return "INSERT INTO " + PropAddrHistDao.HIST_STG_TABLE + \
-               " (PROP_ADDR_ID, EVENT_DATE, EVENT, PRICE, PRICE_SQFT)" \
+               " (PROP_ADDR_ID, EVENT_DATE, EVENT, PRICE)" \
                " VALUES (%(prop_addr_id)s, %(event_date)s," \
-               " %(event)s, %(price)s, %(price_sqft)s)"
+               " %(event)s, %(price)s)"
 
     @staticmethod
     def __gen_insert_value__(hist):

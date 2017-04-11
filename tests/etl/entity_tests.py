@@ -28,21 +28,10 @@ class EntityTests(AbstrTest):
              {'url': 'http://www.mlslistings.com/property/ml81579690/', 'area_id': '96', 'mls_id': 'ML81579690',
               'addr': '230 FORRESTER RD'}]
 
-        addr_verf_etl = AddrVerfEtl()
         prop_addr_incr_lst = PropAddrIncrLst()
         prop_addr_incr_lst.parse(sel_rows)
-        addr_dict_lst = prop_addr_incr_lst.get_addr_dict_lst()
         try:
-
-            self.assertEqual(addr_dict_lst, test_addr_dict_lst)
-            self.success(prop_addr_incr_lst.get_addr_dict_lst.__name__)
-        except AssertionError:
-            self.failure(prop_addr_incr_lst.get_addr_dict_lst.__name__)
-
-        usps_addr_dict_lst = addr_verf_etl.verify(addr_dict_lst)
-        prop_addr_incr_lst.update_incr_lst(usps_addr_dict_lst)
-        incr_inserts = prop_addr_incr_lst.get_incr_inserts()
-        try:
+            incr_inserts = prop_addr_incr_lst.get_incr_inserts()
             self.assertEqual(incr_inserts, test_incr_inserts)
             self.success(prop_addr_incr_lst.get_incr_inserts.__name__)
         except AssertionError:

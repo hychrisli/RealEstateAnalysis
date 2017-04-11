@@ -1,4 +1,5 @@
 from pyusps.address_information import OrderedDict
+from ..routines.addr_verf_etl import AddrVerfEtl
 
 
 class PropAddrIncrLst:
@@ -22,20 +23,9 @@ class PropAddrIncrLst:
             }
             self.incr_lst.append(record)
 
-    def get_addr_dict_lst(self):
-
-        addr_dict_lst = []
-        for rec in self.incr_lst:
-            addr_dict_lst.append(rec['addr_dict'])
-
-        return addr_dict_lst
-
-    def update_incr_lst(self, addr_dict_lst):
-
-        lst_len = len(self.incr_lst)
-        for i in range(lst_len):
-            if isinstance(addr_dict_lst[i], OrderedDict):
-                self.incr_lst[i]['addr_dict'] = addr_dict_lst[i]
+        addr_verf_etl = AddrVerfEtl()
+        usps_addr_dict_lst = addr_verf_etl.verify(self.__get_addr_dict_lst__())
+        self.__update_incr_lst__(usps_addr_dict_lst)
 
     def get_incr_inserts(self):
 
@@ -49,3 +39,17 @@ class PropAddrIncrLst:
             }
             inserts.append(value)
         return inserts
+
+    def __get_addr_dict_lst__(self):
+        addr_dict_lst = []
+        for rec in self.incr_lst:
+            addr_dict_lst.append(rec['addr_dict'])
+
+        return addr_dict_lst
+
+    def __update_incr_lst__(self, addr_dict_lst):
+
+        lst_len = len(self.incr_lst)
+        for i in range(lst_len):
+            if isinstance(addr_dict_lst[i], OrderedDict):
+                self.incr_lst[i]['addr_dict'] = addr_dict_lst[i]
