@@ -39,3 +39,7 @@ PROP_ADDR_PRICE_RPT_TAB = 'prop_addr_price_rpt'
 """ views """
 V_AREA_IDS = 'v_area_ids'
 V_PRICE_MONTH_RPT='v_price_month_rpt'
+
+
+""" Logger Names """
+REA_ROOT_LOGGER = 'REA'

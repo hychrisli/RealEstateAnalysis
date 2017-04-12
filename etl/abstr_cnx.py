@@ -1,10 +1,14 @@
 import mysql.connector
 import os
+import logging
+from utility.constants import REA_ROOT_LOGGER
 
 
 class GenericConnector(object):
 
     def __init__(self):
+        self.logger = logging.getLogger(REA_ROOT_LOGGER + '.ETL')
+
         db_user = os.environ['DB_USER']
         db_pass = os.environ['DB_PASS']
         db_host = os.environ['DB_HOST']

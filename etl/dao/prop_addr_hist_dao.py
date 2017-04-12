@@ -13,7 +13,7 @@ class PropAddrHistDao(GenericConnector):
         super(PropAddrHistDao, self).__init__()
         file_prefix = 'prop_addr_hist_rej_'
         # file_number = str(datetime.now().strftime('%Y%m%d%H%M%S'))
-        file_number = '20170301'
+        file_number = '2017'
         file_suffix = '.dat'
         file_dir = os.environ['REA_DATA']
         file_name = file_prefix + file_number + file_suffix
@@ -46,7 +46,7 @@ class PropAddrHistDao(GenericConnector):
             self.cursor.execute(insert_stmt, insert_value)
         except mysql.connector.Error:
             rej_rec = hist_event.to_string()
-            print ('Rejected Record: ' + rej_rec)
+            self.logger.info('Rejected Record: ' + rej_rec)
             self.rej_rec_file.write(rej_rec + '\n')
 
     def mark_is_updated(self, prop_addr_id):

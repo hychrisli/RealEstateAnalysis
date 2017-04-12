@@ -14,7 +14,7 @@ class MlsPriceMonthRptEtl(GenericConnector):
             latest_date = date.today() - relativedelta(months=3)
 
         if date.today() - relativedelta(months=2) >= latest_date:
-            print ("call sp_mls_price_month_rpt")
+            self.logger.info("call sp_mls_price_month_rpt")
             self.cursor.execute("CALL sp_mls_price_month_rpt")
 
             prop_rpt_cnx = PropAddrPriceRptDao()

@@ -23,7 +23,7 @@ class PropAddrPriceRptEtl(GenericConnector):
         date = PropAddrPriceRptEtl.START_DATE
 
         while month < PropAddrPriceRptEtl.END_MONTH:
-            print("Month: " + month.strftime('%Y-%m') + ' | Time elapsed: ' + get_hms(time.time() - start_time))
+            self.logger.info("Month: " + month.strftime('%Y-%m') + ' | Time elapsed: ' + get_hms(time.time() - start_time))
             self.__clean_table__(PROP_ADDR_PRICE_DAY_RPT_STG_TAB)
             next_month = month + relativedelta(months=+1)
 

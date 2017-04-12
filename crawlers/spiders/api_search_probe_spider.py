@@ -3,11 +3,10 @@ import zlib
 import logging
 import scrapy
 from scrapy_splash import SplashRequest
-from datetime import date
-import time
-import os
+from utility.constants import REA_ROOT_LOGGER
 
-logger = logging.getLogger('REA.API_PROBE')
+
+logger = logging.getLogger(REA_ROOT_LOGGER + '.API_PROBE')
 
 
 class ApiSearchProbeSpider(scrapy.Spider):

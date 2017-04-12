@@ -1,12 +1,10 @@
 import scrapy
-from scrapy.selector import Selector
-
-from lxml import etree
-from random import randint
-
+import logging
 from etl.entities.prop_addr_hist_event import PropAddrHistEvent
 from etl.dao.prop_addr_hist_dao import PropAddrHistDao
-from utility.actions import show_progress,except_response
+from utility.constants import REA_ROOT_LOGGER
+
+logger = logging.getLogger(REA_ROOT_LOGGER + '.PROP_ADDR_HIST')
 
 
 class PropAddrHistSpider(scrapy.Spider):
@@ -38,7 +36,7 @@ class PropAddrHistSpider(scrapy.Spider):
         price = response.xpath('//h2[@id="propertyAddress"]/text()[normalize-space()]').extract_first()
 
         if (event is None) or (price is None):
-            print (str(prop_addr_id) + ' | page not found: ' + response.meta['url'])
+            logger.info(str(prop_addr_id) + ' | page not found: ' + response.meta['url'])
             self.cnx.add_rmv_addr_id(prop_addr_id)
         else:
             hist_event = PropAddrHistEvent()
@@ -49,7 +47,7 @@ class PropAddrHistSpider(scrapy.Spider):
             if (hist_event.event == 'Sold') or (hist_event.price != latest_price) :
                 self.cnx.add_prop_addr_hist_event(hist_event)
 
-            print(hist_event.to_string())
+            logger.info(hist_event.to_string())
 
         self.cnx.mark_is_updated(prop_addr_id)
 

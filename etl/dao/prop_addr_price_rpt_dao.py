@@ -4,7 +4,6 @@ from utility.constants import V_AREA_IDS
 
 
 class PropAddrPriceRptDao(GenericConnector):
-
     SQFT_PRICE_INTVL = 10.0
     IDX_AVG_PRICE_STRUCT_SQFT = 6
 
@@ -94,7 +93,7 @@ class PropAddrPriceRptDao(GenericConnector):
             groupby_clause = " GROUP BY RPT_DATE"
 
         return PropAddrPriceRptDao.__get_sample_select_part__(county_id, city_id, zipcode, prop_type_id) \
-            + where_clause + groupby_clause
+               + where_clause + groupby_clause
 
     @staticmethod
     def __extend_clauses__(where_clause, groupby_clause, field, value):
@@ -113,12 +112,11 @@ class PropAddrPriceRptDao(GenericConnector):
                + str(city_id) + " CITY_ID, " \
                + str(zipcode) + " ZIPCODE, " \
                + str(prop_type_id) + " PROP_TYPE_ID, RPT_DATE, " \
-               "ROUND(SUM(AVG_PRICE * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE, " \
-               "ROUND(SUM(AVG_PRICE_STRUCT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_STRUCT_SQFT, " \
-               "ROUND(SUM(AVG_PRICE_TOT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_TOT_SQFT " \
-               "FROM " + V_PRICE_MONTH_RPT + " "
+                                     "ROUND(SUM(AVG_PRICE * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE, " \
+                                     "ROUND(SUM(AVG_PRICE_STRUCT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_STRUCT_SQFT, " \
+                                     "ROUND(SUM(AVG_PRICE_TOT_SQFT * DAY_AVG_NUM) / SUM(DAY_AVG_NUM), 2) AVG_PRICE_TOT_SQFT " \
+                                     "FROM " + V_PRICE_MONTH_RPT + " "
 
-    @staticmethod
-    def __print_status__(county_id=0, city_id=0, zipcode=0):
-        print("Finished loading county_id: " + str(county_id)
-              + " | city_id: " + str(city_id) + " | zipcode: " + str(zipcode))
+    def __print_status__(self, county_id=0, city_id=0, zipcode=0):
+        self.logger.info("Finished loading county_id: " + str(county_id)
+                         + " | city_id: " + str(city_id) + " | zipcode: " + str(zipcode))
