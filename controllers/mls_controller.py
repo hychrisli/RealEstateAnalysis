@@ -1,14 +1,19 @@
+#!/bin/python
 from controllers.abstr_controller import CrawlRunner, BatchDispatcher
 from crawlers.spiders.property_page_spider import PropertyPageSpider
 from crawlers.spiders.api_search_spider import ApiSearchSpider
 
 import os
+import logging
+
+logger = logging.getLogger('REA.MLS')
 
 
 class ApiSearchRunner(CrawlRunner):
     def __init__(self):
         super(ApiSearchRunner, self).__init__()
-        print ("ApiSearchRunner pid: " + str(os.getpid()))
+        print("ApiSearchRunner pid: " + str(os.getpid()))
+        logger.info("ApiSearchRunner pid: " + str(os.getpid()))
 
     def run(self):
         self.process.crawl(ApiSearchSpider)
@@ -33,6 +38,10 @@ class MlsDispatcher(BatchDispatcher):
 
     def dispatch_jobs(self):
         print ("MlsDispatcher.dispatch_jobs")
+        logger.info("MlsDispatcher.dispatch_jobs")
+        # runner = self.runner_class()
+        # runner.run()
+
         pid = os.fork()
         if pid == 0:
             runner = self.runner_class()

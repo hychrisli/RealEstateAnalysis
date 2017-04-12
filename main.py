@@ -56,12 +56,15 @@ after_res = mls_etl_cnx.check_count_status_dim()
 mls_etl_cnx.diff_status(before_res, after_res)
 mls_etl_cnx.close()
 
-""" Property Address Price Report"""
+""" Property Address Price Report
 # No more history updates, no need to run
 # prop_month_rpt_cnx = PropAddrPriceRptEtl()
 # prop_month_rpt_cnx.run()
 # prop_month_rpt_cnx.close()
+"""
 
+
+"""Monthly Load"""
 mls_price_month_rpt_etl_cnx = MlsPriceMonthRptEtl()
 mls_price_month_rpt_etl_cnx.call_sp_mls_price_month_rpt()
 mls_price_month_rpt_etl_cnx.close()

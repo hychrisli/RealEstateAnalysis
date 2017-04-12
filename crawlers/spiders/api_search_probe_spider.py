@@ -1,30 +1,37 @@
 import json
 import zlib
+import logging
 import scrapy
 from scrapy_splash import SplashRequest
-
+from datetime import date
 import time
+import os
+
+logger = logging.getLogger('REA.API_PROBE')
 
 
-class ApiSearchSpider(scrapy.Spider):
+class ApiSearchProbeSpider(scrapy.Spider):
     name = 'api_search_probe'
 
     def start_requests(self):
         url = 'http://api.mlslistings.com/api/widgetsearch'
-        header = ApiSearchSpider.__gen_header__()
+        header = ApiSearchProbeSpider.__gen_header__()
         zipcodes = ['93907', '93901', '93908']
 
         for zipcode in zipcodes:
-            post_json = ApiSearchSpider.__gen_post_json__(zipcode)
+            post_json = ApiSearchProbeSpider.__gen_post_json__(zipcode)
             print ("Processing " + zipcode)
             yield SplashRequest(url, self.parse,
                                 headers=header,
                                 args={'wait': 1,
                                       'http_method': 'POST',
-                                      'body': post_json})
+                                      'body': post_json},
+                                meta={'zipcode': zipcode})
 
     def parse(self, response):
-        print (response.body)
+        zipcode = response.meta['zipcode']
+        logger.info(str(zipcode))
+        # print (response.body)
         # decompressed_data = zlib.decompress(response.body)
         # print(decompressed_data)
         # body = response.body

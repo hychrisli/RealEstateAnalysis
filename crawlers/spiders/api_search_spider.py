@@ -1,11 +1,14 @@
+#!/bin/python
 import json
-
+import logging
 import scrapy
 from scrapy_splash import SplashRequest
 
 from etl.dao.mls_prop_dao import MlsPropDao
 from etl.dao.zipcode_dao import ZipcodeDao
 from etl.entities.real_property import RealProperty
+
+logger = logging.getLogger('REA.MLS.API_SEARCH')
 
 
 class ApiSearchSpider(scrapy.Spider):
@@ -27,14 +30,17 @@ class ApiSearchSpider(scrapy.Spider):
 
         for (zipcode,) in zipcodes:
             post_json = ApiSearchSpider.__gen_post_json__(zipcode)
-            print ("Processing " + zipcode)
+            # logger.info("Processing " + zipcode)
             yield SplashRequest(url, self.parse,
                                 headers=header,
                                 args={'wait': 1,
                                       'http_method': 'POST',
-                                      'body': post_json})
+                                      'body': post_json},
+                                meta={'zipcode': zipcode})
 
     def parse(self, response):
+        zipcode = response.meta['zipcode']
+        logger.info("Processing " + zipcode)
         body = response.body
         html_selectors_before = '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
         html_selectors_after = '</pre></body></html>'

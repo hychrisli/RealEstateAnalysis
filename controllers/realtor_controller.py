@@ -27,7 +27,7 @@ class PropAddrHistBatchDispatcher(BatchDispatcher):
 
     def dispatch_jobs(self):
         print ("PropAddrHistBatchDispatcher.dispatch_jobs")
-        # self.cnx.init_cleanup()
+        self.cnx.init_cleanup()
         total_num = self.cnx.get_total_num()
         done_num = 0
         print("Total number of jobs: " + str(total_num))
