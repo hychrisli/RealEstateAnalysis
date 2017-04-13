@@ -31,7 +31,7 @@ def get_hms(seconds):
 
 def rand_wait(msg, min_wait=10, max_wait=30):
     wait_time = randint(min_wait, max_wait)
-    print (str(msg) + " | Waiting " + str(wait_time) + "s ...")
+    logger.info (str(msg) + " | Waiting " + str(wait_time) + "s ...")
     time.sleep(wait_time)
 
 

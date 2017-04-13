@@ -52,4 +52,4 @@ class GenericConnector(object):
     def _select_count_(self, table):
         select_stmt = "SELECT COUNT(*) FROM " + table
         cnt = self._select_single_value_(select_stmt)
-        print ("COUNT [" + table + "] : " + str(cnt))
+        self.logger.info ("COUNT [" + table + "] : " + str(cnt))

@@ -6,6 +6,10 @@ from etl.dao.prop_addr_dao import PropAddrDao
 from etl.routines.prop_addr_etl import PropAddrEtl
 from etl.routines.mls_price_month_rpt_etl import MlsPriceMonthRptEtl
 
+from utility.rea_logger import ReaLogger
+from utility.constants import REA_ROOT_LOGGER
+
+ReaLogger(REA_ROOT_LOGGER)
 
 """ API Search spider within a child process """
 api_search_dispatcher = MlsDispatcher(ApiSearchRunner)

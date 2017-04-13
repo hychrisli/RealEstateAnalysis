@@ -1,5 +1,8 @@
 from random import randint
 import constants
+import logging
+
+logger = logging.getLogger(constants.REA_ROOT_LOGGER + '.CALCULATE')
 
 
 def random_non_repeating(min_val, max_val, old):
@@ -20,14 +23,14 @@ def rand_batch_end_num(start_num, total_num, min_size=2, max_size=7):
     if end_num > total_num:
         end_num = total_num
 
-    print ("Batch size: " + str(batch_size) +
-           " | start: " + str(start_num) +
-           " | end: " + str(end_num))
+        logger.info("Batch size: " + str(batch_size) +
+                    " | start: " + str(start_num) +
+                    " | end: " + str(end_num))
 
     return end_num
 
 
 def rand_batch_size(min_size=2, max_size=7):
     batch_size = randint(min_size, max_size)
-    print ("Batch size: " + str(batch_size))
+    logger.info("Batch size: " + str(batch_size))
     return batch_size
