@@ -9,16 +9,17 @@ class ReaLogger:
         filename = os.environ['REA_DATA'] + '/logs/rea_' + date.today().strftime('%Y_%m_%d') + '.log'
         # logging.basicConfig(filename=filename, level=logging.WARN)
 
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
 
-        formatter = logging.Formatter('%(asctime)s : %(message)s', '%m-%d %H:%M:%S')
-        fileHandler = logging.FileHandler(filename, mode='w')
-        fileHandler.setFormatter(formatter)
-        # streamHandler = logging.StreamHandler()
-        # streamHandler.setFormatter(formatter)
+        self.formatter = logging.Formatter('%(asctime)s : %(message)s', '%m-%d %H:%M:%S')
+        file_handler = logging.FileHandler(filename, mode='w')
+        file_handler.setFormatter(self.formatter)
 
-        logger.addHandler(fileHandler)
-        # logger.addHandler(streamHandler)
+        self.logger.addHandler(file_handler)
 
-        print(logger.handlers)
+    def output_console(self):
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(self.formatter)
+        self.logger.addHandler(stream_handler)
+

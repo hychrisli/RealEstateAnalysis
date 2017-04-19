@@ -30,7 +30,7 @@ class ApiSearchProbeSpider(scrapy.Spider):
     def parse(self, response):
         zipcode = response.meta['zipcode']
         logger.info(str(zipcode))
-        # print (response.body)
+        print (response.body)
         # decompressed_data = zlib.decompress(response.body)
         # print(decompressed_data)
         # body = response.body

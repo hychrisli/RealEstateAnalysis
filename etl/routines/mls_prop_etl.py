@@ -50,8 +50,12 @@ class MlsPropEtl(GenericConnector):
 
     @staticmethod
     def __gen_status_dim_select_stmt__():
-        return "SELECT STATUS_EVENT_ID, COUNT(*) from mls_status_dim " \
-               "GROUP BY status_event_id ORDER BY status_event_id"
+        return "SELECT lkp.EVENT_ID, COUNT(stat.STATUS_DATE) AS SUB_TOTAL" \
+               " FROM mls_status_dim stat" \
+               " RIGHT OUTER JOIN event_type_lkp lkp" \
+               " ON stat.STATUS_EVENT_ID = lkp.EVENT_ID" \
+               " GROUP BY lkp.EVENT_ID" \
+               " ORDER BY lkp.EVENT_ID"
 
     def diff_status(self, before, after):
         length = len(before)
